@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+html, 
+body {
+  scroll-behavior: smooth;
+  scroll-margin-top: 500px; 
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins';
+  background-color: white;
+  color: #545454;
+}
+a{
+  margin: 0;
+  cursor: pointer;
+}
+
+.bento{
+  columns: 300px;
+}
+
+
