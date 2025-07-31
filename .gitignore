@@ -10,7 +10,7 @@ client/node_modules/
 client/dist/
 
 # VSCode
-.vscode/
+# .vscode/
 
 # OS
 .DS_Store
