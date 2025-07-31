@@ -3,8 +3,7 @@ services:
     build:
       context: ./server
     volumes:
-      - ./server:/app
-      - media_volume:/app/media
+      - ./server/media:/app/media
     ports:
       - "8000:8000"
     environment:
@@ -19,7 +18,4 @@ services:
     ports:
       - "5173:5173"
     command: ["npm", "run", "dev", "--", "--host"]
-
-volumes:
-  media_volume:
 
