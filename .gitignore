@@ -1,0 +1,16 @@
+# Python
+server/venv/
+server/__pycache__/
+server/*.pyc
+server/db.sqlite3
+server/media/
+
+# Node
+client/node_modules/
+client/dist/
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
