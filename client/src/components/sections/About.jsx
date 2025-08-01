@@ -1,10 +1,15 @@
+import { useEffect } from "react";
+import AOS from "aos";
+
+
 export const About = () => {
+
   return (
   <section id="about" className="ml-8 mr-8 pt-20 md:pt-28 flex gap-30 relative">
-    <div className="hidden z-10 space-y-18 md:flex flex-col items-center">
+    <div data-aos="fade-right" className="hidden z-10 space-y-18 md:flex flex-col items-center">
       <img src="/static/about-img.png" alt="" />
     </div>
-    <div  className="max-w-prose  mx-auto tracking-wider text-sm space-y-6">
+    <div data-aos="fade-left" className="max-w-prose  mx-auto tracking-wider text-sm space-y-6">
       <p><span className="font-semibold">Ricardo Tadeu</span> é paulista, maquiador e jornalista, com uma carreira de mais de dez anos dedicada à escrita sobre meio ambiente, sustentabilidade,
 política e economia. Sua trajetória também incluiu atuações na
 comunicação corporativa de multinacionais e como RP e assessor de
@@ -45,4 +50,4 @@ e técnica em mercados globais.
     </div>
   </section>
   )
-}
+} 

@@ -4,6 +4,7 @@ services:
       context: ./server
     volumes:
       - ./server/media:/app/media
+      - ./server/db.sqlite3:/app/db.sqlite3
     ports:
       - "8000:8000"
     environment:

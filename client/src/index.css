@@ -19,3 +19,16 @@ a{
   columns: 300px;
 }
 
+.fade-in {
+  animation: fadeInAnimation ease 2.5s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadeInAnimation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
