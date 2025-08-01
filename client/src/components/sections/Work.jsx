@@ -3,13 +3,15 @@ import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
+
 
 export const Work = () => {
   const [open, setOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [images, setImages] = useState([]);
 
-  const BACKEND_URL = "http://127.0.0.1:8000"; // or use VITE_BACKEND_URL if you're using env vars
+  const BACKEND_URL = "http://127.0.0.1:8000"; 
 
   useEffect(() => {
     fetch(`${BACKEND_URL}/api/works/`)
@@ -42,12 +44,15 @@ export const Work = () => {
       </div>
 
       <Lightbox
-        plugins={[Thumbnails]}
+        plugins={[Thumbnails, Zoom]}
         open={open}
         close={() => setOpen(false)}
         slides={images}
         index={photoIndex}
-        styles={{ container: { backgroundColor: "rgba(247, 243, 243, 1)" } }}
+        styles={{ container: { backgroundColor: "rgba(247, 243, 243, 1)" }, 
+                  button: { color: "#707070", filter: "none" }}}
+                  
+                  
       />
     </section>
   );
