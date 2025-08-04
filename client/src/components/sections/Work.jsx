@@ -5,6 +5,10 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import Captions from "yet-another-react-lightbox/plugins/captions";
 import "yet-another-react-lightbox/plugins/captions.css";
 
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
+
 
 export const Work = () => {
   const [open, setOpen] = useState(false);
@@ -58,7 +62,7 @@ export const Work = () => {
         close={() => setOpen(false)}
         slides={images}
         index={photoIndex}
-        styles={{ container: { backgroundColor: "rgba(247, 243, 243, 1)" }, 
+        styles={{ container: { backgroundColor: "#000" }, 
                   button: { color: "#707070", filter: "none" }}}
                   
                   

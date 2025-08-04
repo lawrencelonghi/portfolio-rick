@@ -34,18 +34,34 @@ a{
 }
 
 .yarl__slide_captions_container {
+  position: absolute !important;
+  bottom: auto !important;
+  top: 0 !important;
   background: transparent !important;
+  width: 100% !important;
+  padding: 20px 0 !important;
+  display: flex !important;
+  justify-content: center !important;  /* centers child */
+  align-items: center !important;
+  text-align: center !important;
 }
 
 .yarl__slide_title {
-  color: #616161 !important; /* black */
+  color: #616161 !important;
   font-size: 1rem !important;
-  font-weight:lighter;
+  font-weight: lighter;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   letter-spacing: 1px;
-  /* margin-left: 30px; 
-  margin-top: 30px; */
+  margin: 0;
+  padding: 0;
+  max-width: 90%;
+}
 
+.yarl__slide_image {
+  max-height: 80vh !important;  /* limits image height to 80% of viewport height */
+  object-fit: contain !important; /* ensures the image scales properly without cropping */
+  width: auto !important;         /* maintain aspect ratio */
+  max-width: 100% !important;     /* avoid overflow horizontally */
 }
 
 .yarl__icon{
