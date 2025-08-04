@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from .models import Work
 
 def work_list(request):
-    works = Work.objects.all()
+    works = Work.objects.all().order_by('-id')
     data = [
         {
             "id": work.id,

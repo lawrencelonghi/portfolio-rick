@@ -31,6 +31,7 @@ function App() {
       offset: 800, 
     });
   }, [])
+  
 
   const [menuOpen, setMenuOpen] = useState(false)
  

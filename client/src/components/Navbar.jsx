@@ -31,7 +31,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
 
         <a href="#about" className="text-xl text-gray-500 tracking-widest hover:text-gray-950 transition-colors relative group">About <span className="absolute bottom-[-3px] left-0 w-full h-[2px] bg-gray-800 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-in-out z-10"></span></a>
 
-        <a href="#contact" className="text-xl text-gray-500 tracking-widest hover:text-gray-950 transition-colors relative group">Contact <span className="absolute bottom-[-3px] left-0 w-full h-[2px] bg-gray-800 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-in-out z-10"></span></a>
+        <a href="#contact" className=" text-xl text-gray-500 tracking-widest hover:text-gray-950 transition-colors relative group">Contact <span className="absolute bottom-[-3px] left-0 w-full h-[2px] bg-gray-800 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-in-out z-10"></span></a>
       </div>
 
     </div>
