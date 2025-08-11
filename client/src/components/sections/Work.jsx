@@ -50,10 +50,6 @@ export const Work = () => {
                 setPhotoIndex(i);
                 setOpen(true);
               }} className="font-medium cursor-pointer pointer-events-auto">{img.title}</span>
-          <span onClick={() => {
-                setPhotoIndex(i);
-                setOpen(true);
-              }} className="text-sm text-gray-300 cursor-pointer pointer-events-auto">Click to view</span>
         </div>
           </div>
         ))}

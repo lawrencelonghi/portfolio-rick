@@ -15,6 +15,7 @@ import 'aos/dist/aos.css';
 
 
 function App() {
+  
 
   const [fadeIn, setFadeIn] = useState(false);
 
@@ -25,7 +26,8 @@ function App() {
   useEffect(() => {
     AOS.init({
       duration: 1300,
-      offset: 800, 
+      offset: 500, 
+      once: true,
     });
   }, [])
   
@@ -49,3 +51,5 @@ function App() {
 }
 
 export default App
+
+
