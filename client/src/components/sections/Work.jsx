@@ -46,8 +46,14 @@ export const Work = () => {
               }}
             />
             <div className="absolute inset-0 bg-black/50 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white">
-          <span className="font-medium pointer-events-auto">{img.title}</span>
-          <span className="text-sm text-gray-300 pointer-events-auto">Click to view</span>
+          <span onClick={() => {
+                setPhotoIndex(i);
+                setOpen(true);
+              }} className="font-medium cursor-pointer pointer-events-auto">{img.title}</span>
+          <span onClick={() => {
+                setPhotoIndex(i);
+                setOpen(true);
+              }} className="text-sm text-gray-300 cursor-pointer pointer-events-auto">Click to view</span>
         </div>
           </div>
         ))}
@@ -56,13 +62,14 @@ export const Work = () => {
       
 
       <Lightbox
-        plugins={[Zoom, Captions]}
-        captions={{ descriptionTextAlign: "center" }}
+        plugins={[Zoom, Captions, Thumbnails]}
+        // captions={{ descriptionTextAlign: "center" }}
+        thumbnails={{ width: 64, height: 64 }}
         open={open}
         close={() => setOpen(false)}
         slides={images}
         index={photoIndex}
-        styles={{ container: { backgroundColor: "#000" }, 
+        styles={{ container: { backgroundColor: "#fff" }, 
                   button: { color: "#707070", filter: "none" }}}
                   
                   
