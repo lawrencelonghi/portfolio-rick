@@ -1,16 +1,47 @@
-# Python
-server/venv/
-server/__pycache__/
-server/*.pyc
+# ============================
+# Python / Django
+# ============================
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.sqlite3
+db.sqlite3
+
+# Django specific
 server/db.sqlite3
 server/media/
+server/__pycache__/
+server/*.pyc
 
-# Node
+# Virtual environments
+venv/
+.venv/
+ENV/
+server/venv/
+
+# Environment variables
+.env
+.env.*
+server/.env*
+client/.env*
+
+# ============================
+# Node / React (Vite)
+# ============================
 client/node_modules/
 client/dist/
 
-# VSCode
-# .vscode/
-
-# OS
+# ============================
+# OS / Editor junk
+# ============================
 .DS_Store
+Thumbs.db
+*.log
+
+# Docker
+*.pid
+*.sock
+*.tar
+*.log
+__pycache__/
