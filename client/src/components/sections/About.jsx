@@ -5,6 +5,14 @@ import AOS from "aos";
 export const About = () => {
   const { t } = useTranslation();
 
+    useEffect(() => {
+      AOS.init({
+        duration: 1300,
+        offset: 1100, 
+        once: true,
+      });
+    }, [])
+
   return (
     <section id="about" className="ml-8 mr-8 pt-20 md:pt-28 flex gap-30 relative">
       <div data-aos="fade-right" className="hidden z-10 space-y-18 md:flex flex-col items-center">

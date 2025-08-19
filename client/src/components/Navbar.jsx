@@ -1,12 +1,36 @@
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export const Navbar = ({ menuOpen, setMenuOpen }) => {
   const { t, i18n } = useTranslation();
+  const [darkLinks, setDarkLinks] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
   }, [menuOpen]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const work = document.querySelector("#work");
+      const about = document.querySelector("#about");
+      if (!work || !about) return;
+
+      const workRect = work.getBoundingClientRect();
+      const aboutRect = about.getBoundingClientRect();
+
+      // Navbar tem ~80px de altura, ajustamos com offset
+      const offset = 80;
+
+      // Escurecer apenas se estamos entre Work e About
+      const inWorkSection = workRect.top <= offset && aboutRect.top > offset;
+
+      setDarkLinks(inWorkSection);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // rodar uma vez na carga inicial
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const toggleLang = () => {
     i18n.changeLanguage(i18n.language === "en" ? "pt" : "en");
@@ -16,7 +40,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
     <nav className="fixed top-0 left-0 md:top-8 w-full z-40 bg-[rgba(255,255,255,0.2)] backdrop-blur-xs">
       <div className="flex ml-8 mr-8 items-center justify-between max-w-7xl h-16">
 
-        {/* Logo and Title */}
+        {/* Logo */}
         <div className="flex items-center space-x-2">
           <a
             href="#work"
@@ -29,7 +53,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
           </span>
         </div>
 
-        {/* Mobile toggle & hamburger (only if menu is closed) */}
+        {/* Mobile */}
         {!menuOpen && (
           <div className="flex items-center space-x-4 lg:hidden">
             <button
@@ -47,17 +71,23 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
           </div>
         )}
 
-        {/* Desktop menu */}
+        {/* Desktop */}
         <div className="hidden lg:flex md:gap-14 items-center">
-          <a href="#work" className="text-xl text-gray-500 hover:text-gray-950">
+          <a
+            href="#work"
+            className={`text-xl transition-colors duration-500 ${darkLinks ? "text-gray-900" : "text-gray-500"} hover:text-gray-950`}
+          >
             {t("work")}
           </a>
-          <a href="#about" className="text-xl text-gray-500 hover:text-gray-950">
+          <a
+            href="#about"
+            className={`text-xl transition-colors duration-500 ${darkLinks ? "text-gray-900" : "text-gray-500"} hover:text-gray-950`}
+          >
             {t("about")}
           </a>
           <a
             href="#contact"
-            className="text-xl text-gray-500 hover:text-gray-950"
+            className={`text-xl transition-colors duration-500 ${darkLinks ? "text-gray-900" : "text-gray-500"} hover:text-gray-950 `}
           >
             {t("contact")}
           </a>

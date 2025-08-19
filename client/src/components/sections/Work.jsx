@@ -39,7 +39,7 @@ export const Work = () => {
               };
             }
           })
-          .reverse();
+          // .reverse();
 
         setItems(formatted);
       })
@@ -47,7 +47,7 @@ export const Work = () => {
   }, []);
 
   return (
-    <section className="scroll-mt-28 mt-24 md:mt-40 m-5 p-2">
+    <section id="work" className="scroll-mt-28 mt-24 md:mt-40 m-5 p-2">
       <div className="bento gap-2">
         {items.map((item, i) => (
           <div key={i} className="relative mb-2 group">

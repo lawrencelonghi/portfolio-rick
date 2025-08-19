@@ -23,13 +23,7 @@ function App() {
     setFadeIn(true);
   }, []);
 
-  useEffect(() => {
-    AOS.init({
-      duration: 1300,
-      offset: 500, 
-      once: true,
-    });
-  }, [])
+
   
 
   const [menuOpen, setMenuOpen] = useState(false)
