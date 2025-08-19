@@ -11,7 +11,7 @@ def work_list(request):
         {
             "id": work.id,
             "title": work.title,
-            "image": request.build_absolute_uri(work.image.url)
+            "file_url": request.build_absolute_uri(work.file.url) if work.file else None
         }
         for work in works
     ]
