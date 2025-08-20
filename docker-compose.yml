@@ -1,32 +1,66 @@
 services:
-  backend:
+  backend_dev:
     build:
       context: .
     volumes:
       - ./server/media:/app/media
       - ./server/db:/app/db
       - ./server:/app
-      - ./client/dist:/app/client/dist  # built frontend
-    command: >
-      sh -c "python manage.py migrate &&
-             gunicorn -w 4 --bind 0.0.0.0:8000 config.wsgi:application"
+    ports:
+      - "8000:8000"
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"  
     env_file:
       - server/.env
-    expose:
-      - "8000"   # internal network only
+
+  frontend_dev:
+    build:
+      context: ./client
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    command: ["npm", "run", "dev", "--", "--host"]
+
+  backend_prod:
+    build:
+      context: .
+    volumes:
+      - ./server/media:/app/media
+      - ./server/db:/app/db
+      - ./server:/app
+    ports:
+      - "8000:8000"
+    command: sh -c "python manage.py migrate && gunicorn -w 4 --bind 0.0.0.0:8000 config.wsgi:application"
+    env_file:
+      - server/.env
+    depends_on:
+      - frontend_prod
+    profiles:
+      - prod
+
+  frontend_prod:
+    build:
+      context: ./client
+    command: ["npm", "run", "build"]
+    profiles:
+      - prod
 
   https-portal:
     image: steveltn/https-portal:1
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     environment:
-      DOMAINS: "ricktadeu.com.br -> http://backend:8000"
-      STAGE: "production"
-    depends_on:
-      - backend
+      DOMAINS: 'ricktadeu.com.br -> http://backend_prod:8000'
+      STAGE: 'production'  
     volumes:
       - https-portal-data:/var/lib/https-portal
+    depends_on:
+      - backend_prod
+    profiles:
+      - prod
 
 volumes:
   https-portal-data:
+
