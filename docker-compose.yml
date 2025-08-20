@@ -52,7 +52,7 @@ services:
       - '80:80'
       - '443:443'
     environment:
-      DOMAINS: 'ricktadeu.com.br -> http://backend_prod:8000'
+      DOMAINS: 'ricktadeu.com.br -> http://backend_prod:8001'
       STAGE: 'production'   # use 'staging' first to test certificates
     volumes:
       - https-portal-data:/var/lib/https-portal
