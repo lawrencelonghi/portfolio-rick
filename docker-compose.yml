@@ -1,7 +1,7 @@
 services:
   backend_dev:
     build:
-      context: ./server
+      context: .
     volumes:
       - ./server/media:/app/media
       - ./server/db:/app/db
@@ -24,7 +24,7 @@ services:
 
   backend_prod:
     build:
-      context: ./server
+      context: .
     volumes:
       - ./server/media:/app/media
       - ./server/db:/app/db
