@@ -65,6 +65,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://ricktadeu.com.br",      
     "https://www.ricktadeu.com.br",
+    "http://www.ricktadeu.com.br",
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -83,6 +84,8 @@ TEMPLATES = [
         },
     },
 ]
+
+TEMPLATES[0]["DIRS"] = [BASE_DIR / "templates"]
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
@@ -134,6 +137,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [
+    BASE_DIR / "client" / "dist" / "assets",
+]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
