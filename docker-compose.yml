@@ -42,12 +42,9 @@ services:
   frontend_prod:
     build:
       context: ./client
-    volumes:
-      - ./client:/app
-      - /app/node_modules
-    ports:
-      - "5173:5173"
     command: ["npm", "run", "build"]
+    profiles:
+      - prod
 
   https-portal:
     image: steveltn/https-portal:1
