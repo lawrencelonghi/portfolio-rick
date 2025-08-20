@@ -13,6 +13,9 @@ server/db.sqlite3
 server/media/
 server/__pycache__/
 server/*.pyc
+server/static
+server/staticfiles
+server/templates
 
 # Virtual environments
 venv/

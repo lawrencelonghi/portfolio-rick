@@ -9,12 +9,21 @@ import { Contact } from './components/sections/Contact'
 
 
 
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+// import AOS from 'aos';
+// import 'aos/dist/aos.css';
 
 
 
 function App() {
+
+    //  useEffect(() => {
+    //     AOS.init({
+    //       duration: 1300,
+    //       offset: 1100, 
+    //       once: true,
+    //     });
+    //   }, [])
+  
   
 
   const [fadeIn, setFadeIn] = useState(false);

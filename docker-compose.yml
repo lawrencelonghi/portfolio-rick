@@ -1,5 +1,5 @@
 services:
-  backend:
+  backend_dev:
     build:
       context: ./server
     volumes:
@@ -8,10 +8,11 @@ services:
       - ./server:/app
     ports:
       - "8000:8000"
-    environment:
-      - DEBUG=1
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"  
+    env_file:
+      - server/.env
 
-  frontend:
+  frontend_dev:
     build:
       context: ./client
     volumes:
@@ -20,4 +21,31 @@ services:
     ports:
       - "5173:5173"
     command: ["npm", "run", "dev", "--", "--host"]
+
+  backend_prod:
+    build:
+      context: ./server
+    volumes:
+      - ./server/media:/app/media
+      - ./server/db:/app/db
+      - ./server:/app
+    ports:
+      - "80:8000"
+    command: sh -c "python manage.py migrate && gunicorn -w 4 --bind 0.0.0.0:8000 core.wsgi:application"
+    env_file:
+      - server/.env
+    depends_on:
+      - frontend_prod
+    profiles:
+      - prod
+
+  frontend_prod:
+    build:
+      context: ./client
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    command: ["npm", "run", "build"]
 
