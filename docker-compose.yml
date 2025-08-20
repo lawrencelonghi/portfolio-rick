@@ -1,7 +1,6 @@
 services:
   backend_dev:
-    build:
-      context: .
+    build: .
     volumes:
       - ./server/media:/app/media
       - ./server/db:/app/db
@@ -11,6 +10,8 @@ services:
     command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"  
     env_file:
       - server/.env
+    profiles:
+      - dev
 
   frontend_dev:
     build:
@@ -21,10 +22,11 @@ services:
     ports:
       - "5173:5173"
     command: ["npm", "run", "dev", "--", "--host"]
+    profiles:
+      - dev
 
   backend_prod:
-    build:
-      context: .
+    build: .
     volumes:
       - ./server/media:/app/media
       - ./server/db:/app/db
