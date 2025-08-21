@@ -21,7 +21,8 @@ RUN mkdir -p /app/staticfiles/assets
 RUN cp -r /app/client/dist/assets/* /app/staticfiles/assets/
 
 # Copy public images directly into Django static
-RUN cp -r /frontend/public/* /app/staticfiles/
+COPY --from=frontend-build /frontend/public /app/staticfiles/
+
 
 # Copy index.html to templates
 RUN mkdir -p /app/templates && cp /app/client/dist/index.html /app/templates/
