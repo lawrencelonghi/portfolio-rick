@@ -4,6 +4,7 @@ WORKDIR /frontend
 COPY client/package*.json ./
 RUN npm install
 COPY client/ ./
+ENV NODE_ENV=production
 RUN npm run build
 
 # Stage 2: backend
