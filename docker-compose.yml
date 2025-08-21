@@ -1,6 +1,8 @@
 services:
   backend_prod:
-    build: .
+    build:
+      context: .
+      dockerfile: server/Dockerfile
     volumes:
       - ./server/media:/app/media
       - ./server/db:/app/db
@@ -8,7 +10,9 @@ services:
       - "8000:8000"
     env_file:
       - server/.env
-    command: sh -c "python manage.py migrate && gunicorn -w 4 --bind 0.0.0.0:8000 config.wsgi:application"
+    command: >
+      sh -c "python manage.py migrate &&
+            gunicorn -w 4 --bind 0.0.0.0:8000 config.wsgi:application"
     profiles:
       - prod
 
