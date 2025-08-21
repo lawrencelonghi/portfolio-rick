@@ -3,7 +3,7 @@ import os
 
 class Work(models.Model):
     title = models.CharField(max_length=100, blank=True)
-    file = models.FileField(upload_to='media/works/', blank=True, null=True)
+    file = models.FileField(upload_to='works/', blank=True, null=True)
     def __str__(self):
         return self.title or "Untitled"
 
