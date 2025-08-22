@@ -1,0 +1,26 @@
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name <%= domain.name %>;
+
+    ssl_certificate <%= domain.chained_cert_path %>;
+    ssl_certificate_key <%= domain.domain_key_path %>;
+
+    # Configuração para arquivos grandes
+    client_max_body_size 100M;
+
+    location / {
+        proxy_pass http://<%= domain.upstream %>;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        
+        # Configurações para upload
+        proxy_request_buffering off;
+        proxy_buffering off;
+        proxy_read_timeout 300;
+        proxy_connect_timeout 300;
+        proxy_send_timeout 300;
+    }
+}
