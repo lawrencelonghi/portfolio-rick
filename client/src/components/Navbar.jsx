@@ -63,7 +63,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
               {i18n.language === "en" ? "EN" : "PT"}
             </button>
             <div
-              className="relative cursor-pointer text-gray-950 z-40 text-2xl"
+              className="px-1 py-0.5 border border-gray-400 rounded cursor-pointer text-gray-950 z-40 text-xs inline-flex items-center justify-center"
               onClick={() => setMenuOpen(true)}
             >
               &#9776;
