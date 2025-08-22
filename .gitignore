@@ -24,14 +24,16 @@ ENV/
 server/venv/
 
 # ignore default env files
-.env
+.env*
 
 # ignore env files in server and client, except production
-server/.env
-client/.env
+server/.env*
+client/.env*
 
 # optionally, ignore development env specifically
 client/.env.development
+client/.env.production
+
 
 # ============================
 # Node / React (Vite)
