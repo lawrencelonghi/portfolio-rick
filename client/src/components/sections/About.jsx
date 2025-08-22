@@ -10,7 +10,7 @@ export const About = () => {
     useEffect(() => {
       AOS.init({
         duration: 1300,
-        offset: 1100, 
+        offset: 800, 
         once: true,
       });
     }, [])
