@@ -24,12 +24,9 @@ services:
     environment:
       DOMAINS: "ricktadeu.com.br -> http://backend_prod:8000"
       STAGE: "production"
-      # Configurações customizadas do nginx
+      WEBSOCKET_MAX_BODY_SIZE: 100M
       NGINX_CONF_OVERRIDE: |
         client_max_body_size 100M;
-        proxy_read_timeout 300s;
-        proxy_connect_timeout 300s;
-        proxy_send_timeout 300s;
     volumes:
       - https-portal-data:/var/lib/https-portal
     depends_on:
