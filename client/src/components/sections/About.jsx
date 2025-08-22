@@ -1,19 +1,19 @@
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
-// import AOS from "aos";
-// import "aos/dist/aos.css";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 export const About = () => {
   console.log("About component rendered")
   const { t } = useTranslation();
 
-    // useEffect(() => {
-    //   AOS.init({
-    //     duration: 1300,
-    //     offset: 1100, 
-    //     once: true,
-    //   });
-    // }, [])
+    useEffect(() => {
+      AOS.init({
+        duration: 1300,
+        offset: 1100, 
+        once: true,
+      });
+    }, [])
 
   return (
     <section id="about" className="ml-8 mr-8 pt-20 md:pt-28 flex gap-30 relative">
