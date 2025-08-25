@@ -63,7 +63,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
               {i18n.language === "en" ? "EN" : "PT"}
             </button>
             <div
-              className="px-1 py-0.5 border border-gray-400 rounded cursor-pointer text-gray-950 z-40 text-xs inline-flex items-center justify-center"
+              className="px-1 py-0.5  cursor-pointer text-gray-950 z-40 text-xs inline-flex items-center justify-center"
               onClick={() => setMenuOpen(true)}
             >
               &#9776;
@@ -93,7 +93,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
           </a>
           <button
             onClick={toggleLang}
-            className="ml-6 px-2 py-1 border rounded text-sm"
+            className="ml-6 px-2 py-1 border rounded cursor-pointer text-sm"
           >
             {i18n.language.toUpperCase()}
           </button>

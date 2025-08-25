@@ -4,13 +4,12 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 
 export const About = () => {
-  console.log("About component rendered")
   const { t } = useTranslation();
 
     useEffect(() => {
       AOS.init({
-        duration: 1300,
-        offset: 600, 
+        duration: 1000,
+        offset: 200, 
         once: true,
       });
     }, [])
