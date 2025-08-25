@@ -4,12 +4,21 @@ html,
 body {
   scroll-behavior: smooth;
   scroll-margin-top: 500px; 
+  -webkit-overflow-scrolling: touch; /* Para iOS */
   margin: 0;
   padding: 0;
   font-family: 'Poppins';
   background-color: white;
   color: #545454;
 }
+
+@supports not (scroll-behavior: smooth) {
+  html, body {
+    scroll-behavior: auto;
+  }
+}
+
+
 a{
   margin: 0;
   cursor: pointer;
