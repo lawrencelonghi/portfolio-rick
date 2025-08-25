@@ -58,7 +58,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
           <div className="flex items-center space-x-4 lg:hidden">
             <button
               onClick={toggleLang}
-              className="px-1 py-0.5 border border-gray-400 rounded text-xs"
+              className="px-1 py-0.5 border border-gray-400 rounded text-sm"
             >
               {i18n.language === "en" ? "EN" : "PT"}
             </button>
