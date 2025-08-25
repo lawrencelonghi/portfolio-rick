@@ -6,6 +6,7 @@ import { MobileMenu } from './components/MobileMenu'
 import { Work } from './components/sections/Work'
 import { About } from './components/sections/About'
 import { Contact } from './components/sections/Contact'
+import smoothscroll from 'smoothscroll-polyfill';
 
 
 
@@ -16,7 +17,7 @@ import 'aos/dist/aos.css';
 
 function App() {
 
-
+  smoothscroll.polyfill();
   
 
   const [fadeIn, setFadeIn] = useState(false);
