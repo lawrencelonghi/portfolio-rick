@@ -58,12 +58,13 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
           <div className="flex items-center space-x-4 lg:hidden">
             <button
               onClick={toggleLang}
-              className="px-1 py-0.5 border border-gray-400 rounded text-sm"
+              className="px-1 py-0.5 border border-gray-400 rounded"
+              style={{fontSize: '8px'}}
             >
               {i18n.language === "en" ? "EN" : "PT"}
             </button>
             <div
-              className="px-1 py-0.5  cursor-pointer text-gray-950 z-40 text-xs inline-flex items-center justify-center"
+              className="px-0.5 py-0.5  cursor-pointer text-gray-950 z-40 text-xl mb-1 inline-flex items-center justify-center"
               onClick={() => setMenuOpen(true)}
             >
               &#9776;
