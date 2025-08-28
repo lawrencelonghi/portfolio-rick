@@ -10,17 +10,15 @@ i18n.use(initReactI18next).init({
         contact: "Contact",
         beautyArtist: "Beauty Artist",
         aboutParagraph1:
-          "Ricardo Tadeu is from São Paulo, a makeup artist and journalist, with a career spanning more than ten years dedicated to writing about the environment, sustainability, politics, and economics. His journey also included roles in corporate communication for multinationals and as PR and press officer in gastronomy and cinema. However, it was when he ventured into fashion and beauty that he found his true passion: makeup.",
+          "Ricardo Tadeu is a São Paulo native and accomplished makeup artist whose career encompasses advertising, editorial, fashion, audiovisual, and film. Since 2018, he has brought his creative vision to major campaigns for brands such as Motorola, Fila, McDonald’s, Audi, BAW Clothing, Kipling, Puma Global, Diesel, Avène, Dove, O Boticário, Volkswagen, Vult, Quem Disse Berenice!, Beyoung, and Natura.",
         aboutParagraph2:
-          "After living for two and a half years in Porto Alegre, southern Brazil, where he gained unforgettable personal and professional experiences, Ricardo returned to São Paulo in 2019. Since then, he has stood out in advertising, editorial, audiovisual, and cinema fields, always aiming to highlight and transform his clients' beauty.",
+          "Rick's international experience includes working in creative hubs like New York, London, Paris, and Sydney. Exposure to these diverse markets has broadened his technical skillset and aesthetic sensibility, enabling him to seamlessly adapt to both emerging trends and enduring styles. This versatility makes him a valued collaborator for brands and creative teams in search of impactful results.",
         aboutParagraph3:
-          "His portfolio features campaigns for major brands such as McDonald's, Audi, BAW Clothing, Kipling, Puma Global, Diesel, Avène, Dove, O Boticário, Volkswagen, Vult, Quem Disse Berenice!, Beyoung, Natura, among others.",
+          "Rick is also an educator at the renowned Madre School, Creative Knowledge in São Paulo. He teaches the class Makeup for Photography and Advertising, which is designed for market professionals who seek advanced techniques for camera and commercial settings. Ricardo is also involved in training creative teams and contributing to product development for leading Brazilian beauty brands, sharing his technical expertise and innovative approach to enhance each project.",
         aboutParagraph4:
-          "Rick also works in training and product development, bringing his expertise to creative teams and projects of major national brands.",
+          "Rick’s makeup philosophy centers on capturing emotion and individuality, transforming inspiration from his clients’ personalities and stories into expressive visuals. His background in communications further supports his ability to interpret client needs and translate creative concepts into precise, memorable looks.",
         aboutParagraph5:
-          "In makeup, he seeks inspiration from emotions and unique moments, creating forms of expression beyond words. As a trained communicator, Ricardo knows that what cannot be said by speech or writing can be conveyed with colors and images.",
-        aboutParagraph6:
-          "With international experience, Rick has worked in cities such as New York, London, Paris, and Sydney, Australia, broadening his aesthetic and technical vision in global markets.",
+          "With a dedication to excellence and a global outlook, Ricardo offers a sophisticated and inspired approach to beauty. His broad experience, commitment to education, and creative insight set him apart as a standout professional ready to make an impact in European vibrant fashion and beauty scene.",
       },
     },
     pt: {
