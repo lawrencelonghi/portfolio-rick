@@ -4,7 +4,7 @@ export const Contact = () => {
 
       <div className="flex gap-3 max-w-xs w-full">
         <img src="/static/instagram-logo-thin-svgrepo-com.svg" className="w-6" />
-        <a href="https://www.instagram.com/rick_makeup/" className="text-1xl cursor-pointer md:text-1xl text-gray-800 tracking-widest hover:text-gray-400 transition-colors">rickmakeup</a>
+        <a href="https://www.instagram.com/rick_makeup/" className="text-1xl cursor-pointer md:text-1xl text-gray-800 tracking-widest hover:text-gray-400 transition-colors">rick_makeup</a>
       </div> 
 
       <div className="flex gap-3 max-w-xs w-full">
