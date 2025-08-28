@@ -14,11 +14,13 @@ i18n.use(initReactI18next).init({
         aboutParagraph2:
           "Rick's international experience includes working in creative hubs like New York, London, Paris, and Sydney. Exposure to these diverse markets has broadened his technical skillset and aesthetic sensibility, enabling him to seamlessly adapt to both emerging trends and enduring styles. This versatility makes him a valued collaborator for brands and creative teams in search of impactful results.",
         aboutParagraph3:
-          "Rick is also an educator at the renowned Madre School, Creative Knowledge in São Paulo. He teaches the class Makeup for Photography and Advertising, which is designed for market professionals who seek advanced techniques for camera and commercial settings. Ricardo is also involved in training creative teams and contributing to product development for leading Brazilian beauty brands, sharing his technical expertise and innovative approach to enhance each project.",
+          "Rick is also an educator at the renowned Madre School, Creative Knowledge in São Paulo. He teaches the class Makeup for Photography and Advertising, which is designed for market professionals who seek advanced techniques for camera and commercial settings.",
         aboutParagraph4:
-          "Rick’s makeup philosophy centers on capturing emotion and individuality, transforming inspiration from his clients’ personalities and stories into expressive visuals. His background in communications further supports his ability to interpret client needs and translate creative concepts into precise, memorable looks.",
+          "Ricardo is also involved in training creative teams and contributing to product development for leading Brazilian beauty brands, sharing his technical expertise and innovative approach to enhance each project.",
         aboutParagraph5:
-          "With a dedication to excellence and a global outlook, Ricardo offers a sophisticated and inspired approach to beauty. His broad experience, commitment to education, and creative insight set him apart as a standout professional ready to make an impact in European vibrant fashion and beauty scene.",
+          "Rick’s makeup philosophy centers on capturing emotion and individuality, transforming inspiration from his clients’ personalities and stories into expressive visuals. His background in communications further supports his ability to interpret client needs and translate creative concepts into precise, memorable looks.",
+        aboutParagraph6:
+          "With a dedication to excellence and a global outlook, Ricardo offers a sophisticated and inspired approach to beauty. His broad experience, commitment to education, and creative insight set him apart as a standout professional ready to make an impact in European vibrant fashion and beauty scene."
       },
     },
     pt: {
