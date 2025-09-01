@@ -37,7 +37,7 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 md:top-8 w-full z-40 bg-[rgba(255,255,255,0.66)] backdrop-blur-xs">
+    <nav className="fixed top-0 left-0 md:top-8  w-full z-40 bg-[rgba(255,255,255,0.66)] backdrop-blur-xs">
       <div className="flex ml-8 mr-8 items-center justify-between max-w-7xl h-16">
 
         {/* Logo */}
