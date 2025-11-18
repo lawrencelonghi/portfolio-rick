@@ -8,45 +8,29 @@ import { About } from './components/sections/About'
 import { Contact } from './components/sections/Contact'
 import smoothscroll from 'smoothscroll-polyfill';
 
-
+// Ativa o polyfill ANTES de tudo
+smoothscroll.polyfill();
 
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-
-
 function App() {
-
-  smoothscroll.polyfill();
-  
-
   const [fadeIn, setFadeIn] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     setFadeIn(true);
   }, []);
 
-
-  
-
-  const [menuOpen, setMenuOpen] = useState(false)
- 
-
-  return <>
-  <div className={fadeIn ? "fade-in" : ""}>
-
-  <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-  <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-  <Work />
-  <About />
-  <Contact />
-  
-  </div>
-  
-
-  </>
+  return (
+    <div className={fadeIn ? "fade-in" : ""}>
+      <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <MobileMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <Work />
+      <About />
+      <Contact />
+    </div>
+  );
 }
 
-export default App
-
-
+export default App;
