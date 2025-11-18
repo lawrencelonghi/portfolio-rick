@@ -1,4 +1,38 @@
 services:
+  # DESENVOLVIMENTO
+  backend_dev:
+    image: python:3.12-slim
+    working_dir: /app
+    volumes:
+      - ./server:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    env_file:
+      - server/.env
+    command: >
+      sh -c "pip install -r requirements.txt &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    profiles:
+      - dev
+
+  client_dev:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_BACKEND_URL=http://localhost:8000
+    profiles:
+      - dev
+
+  # PRODUÇÃO
   backend_prod:
     build:
       context: .
@@ -24,7 +58,6 @@ services:
     environment:
       DOMAINS: "ricktadeu.com.br -> http://backend_prod:8000, www.ricktadeu.com.br -> http://backend_prod:8000"
       STAGE: "production"
-      # Configurações customizadas do nginx
       NGINX_CONF_OVERRIDE: |
         client_max_body_size 100M;
         proxy_read_timeout 300s;
