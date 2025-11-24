@@ -13,6 +13,7 @@ smoothscroll.polyfill();
 
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import Footer from './components/sections/Footer'
 
 function App() {
   const [fadeIn, setFadeIn] = useState(false);
@@ -29,6 +30,7 @@ function App() {
       <Work />
       <About />
       <Contact />
+      <Footer />
     </div>
   );
 }

@@ -107,10 +107,21 @@ export const Work = () => {
           }}
           slides={formatItemsForLightbox(selectedCampaign.items)}
           index={0}
-          thumbnails={{ width: 64, height: 64 }}
+          // carousel={{ finite: selectedCampaign.items.length <= 10 }}
+          thumbnails={{ 
+            width: 80, 
+            height: 80, 
+            border: 0, 
+            borderRadius: 0,
+            padding: 0,
+            gap: 8,
+            vignette: false
+          }}
           styles={{
             container: { backgroundColor: "#fff" },
             button: { color: "#707070", filter: "none" },
+            thumbnail: { border: "none" },
+            thumbnailsContainer: { backgroundColor: "#fff" },
           }}
         />
       )}
