@@ -2,9 +2,9 @@
 
 html, 
 body {
-  scroll-behavior: smooth;
+  scroll-behavior: smooth; 
   scroll-margin-top: 500px; 
-  -webkit-overflow-scrolling: touch; /* Para iOS */
+  -webkit-overflow-scrolling: touch; 
   margin: 0;
   padding: 0;
   font-family: 'Poppins';
