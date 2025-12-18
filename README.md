@@ -197,7 +197,7 @@ Os arquivos de tradução estão em `client/src/i18n.js`.
 
 ## 📸 Gerenciamento de Conteúdo
 
-1. Acesse o painel admin: `http://localhost:8000/admin` (dev) ou `https://ricktadeu.com.br/admin` (prod)
+1. Acesse o painel admin: `http://localhost:8000/admin`
 2. Faça login com as credenciais de superusuário
 3. Adicione, edite ou remova trabalhos na seção "Works"
 4. Faça upload de imagens ou vídeos

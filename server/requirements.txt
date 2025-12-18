@@ -6,3 +6,4 @@ typing_extensions==4.14.1
 django-cors-headers
 whitenoise
 gunicorn
+django-admin-sortable2

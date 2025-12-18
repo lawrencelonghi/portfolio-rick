@@ -1,12 +1,15 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
 from .models import Campaign, Work
 
-class WorkInline(admin.TabularInline):
+
+class WorkInline(SortableInlineAdminMixin, admin.TabularInline):
     model = Work
     extra = 1
-    fields = ('file', 'title', 'order', 'is_cover', 'preview')
+    fields = ('file', 'title', 'is_cover', 'preview')
     readonly_fields = ('preview',)
+
     
     def preview(self, obj):
         if obj.file:
@@ -26,9 +29,8 @@ class WorkInline(admin.TabularInline):
 
 
 @admin.register(Campaign)
-class CampaignAdmin(admin.ModelAdmin):
-    list_display = ('name', 'image_count', 'order', 'cover_preview', 'created_at')
-    list_editable = ('order',)
+class CampaignAdmin(SortableAdminMixin, admin.ModelAdmin):
+    list_display = ('name', 'image_count', 'cover_preview', 'created_at')
     search_fields = ('name',)
     inlines = [WorkInline]
     
@@ -48,12 +50,11 @@ class CampaignAdmin(admin.ModelAdmin):
 
 
 @admin.register(Work)
-class WorkAdmin(admin.ModelAdmin):
-    list_display = ('campaign', 'title', 'is_cover', 'order', 'file_preview')
+class WorkAdmin(SortableAdminMixin, admin.ModelAdmin):
+    list_display = ('campaign', 'title', 'is_cover', 'file_preview')
     list_filter = ('campaign', 'is_cover')
-    list_editable = ('order', 'is_cover')
+    list_editable = ('is_cover',)
     search_fields = ('campaign__name', 'title')
-    ordering = ('campaign__order', 'campaign', 'order')
     
     def file_preview(self, obj):
         if obj.file:

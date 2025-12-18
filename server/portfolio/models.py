@@ -3,7 +3,13 @@ import os
 
 class Campaign(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name="Nome da Campanha")
-    order = models.IntegerField(default=0, help_text="Ordem de exibição na home (menor aparece primeiro)")
+    order = models.PositiveIntegerField(
+        default=0, 
+        blank=False, 
+        null=False,
+        db_index=True,  # Para performance
+        help_text="Ordem de exibição na home"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
@@ -28,7 +34,13 @@ class Work(models.Model):
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='works', verbose_name="Campanha")
     title = models.CharField(max_length=100, blank=True, verbose_name="Título")
     file = models.FileField(upload_to='works/', blank=True, null=True, verbose_name="Arquivo")
-    order = models.IntegerField(default=0, help_text="Ordem de exibição dentro da campanha")
+    order = models.PositiveIntegerField(
+        default=0,
+        blank=False,
+        null=False,
+        db_index=True,  # Para performance
+        help_text="Ordem de exibição dentro da campanha"
+    )
     is_cover = models.BooleanField(default=False, verbose_name="Capa da campanha", help_text="Imagem que aparece na home")
     
     class Meta:
