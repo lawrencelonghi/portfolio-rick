@@ -3,18 +3,30 @@ import uploadFeature from '@adminjs/upload';
 import { ComponentLoader } from 'adminjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const componentLoader = new ComponentLoader();
 
+// Criar diretórios se não existirem
+const uploadsDir = path.join(__dirname, '../../public/uploads');
+const campaignsDir = path.join(uploadsDir, 'campaigns');
+const galleryDir = path.join(uploadsDir, 'gallery');
+
+[uploadsDir, campaignsDir, galleryDir].forEach(dir => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+});
+
 // Configuração para upload de thumbnail das campanhas
 export const campaignUploadFeature: FeatureType = uploadFeature({
   componentLoader,
   provider: {
     local: {
-      bucket: path.join(__dirname, '../../public/uploads/campaigns'),
+      bucket: campaignsDir,
       opts: {
         baseUrl: '/uploads/campaigns',
       },
@@ -23,11 +35,11 @@ export const campaignUploadFeature: FeatureType = uploadFeature({
   properties: {
     key: 'thumb_url',
     file: 'thumb_file',
+    filePath: 'thumb_path',
+    filesToDelete: 'thumb_to_delete',
   },
-  uploadPath: (record: any, filename: string) => {
-    const timestamp = Date.now();
-    const ext = path.extname(filename);
-    return `campaign-${record.id || timestamp}${ext}`;
+  validation: {
+    mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg'],
   },
 });
 
@@ -36,7 +48,7 @@ export const galleryUploadFeature: FeatureType = uploadFeature({
   componentLoader,
   provider: {
     local: {
-      bucket: path.join(__dirname, '../../public/uploads/gallery'),
+      bucket: galleryDir,
       opts: {
         baseUrl: '/uploads/gallery',
       },
@@ -45,11 +57,11 @@ export const galleryUploadFeature: FeatureType = uploadFeature({
   properties: {
     key: 'image_url',
     file: 'image_file',
+    filePath: 'image_path',
+    filesToDelete: 'image_to_delete',
   },
-  uploadPath: (record: any, filename: string) => {
-    const timestamp = Date.now();
-    const ext = path.extname(filename);
-    return `gallery-${record.id || timestamp}${ext}`;
+  validation: {
+    mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg'],
   },
 });
 

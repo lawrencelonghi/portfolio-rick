@@ -6,23 +6,19 @@ import { campaignUploadFeature, galleryUploadFeature, componentLoader } from './
 
 dotenv.config();
 
-// Registrar o adapter SQL
 AdminJS.registerAdapter({
   Database,
   Resource,
 });
 
 export const setupAdmin = async () => {
-  // Criar connection string do PostgreSQL
   const connectionString = `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || '5432'}/${process.env.DB_NAME || 'portfolio_db'}`;
 
-  // Conectar ao banco usando Adapter
   const db = await new Adapter('postgresql', {
     connectionString,
     database: process.env.DB_NAME || 'portfolio_db',
   }).init();
 
-  // Configurar recursos usando db.table()
   const adminOptions = {
     componentLoader,
     resources: [
@@ -42,23 +38,25 @@ export const setupAdmin = async () => {
               isRequired: true,
             },
             thumb_url: {
-              isVisible: { list: false, filter: false, show: true, edit: false },
+              isVisible: { list: true, filter: false, show: true, edit: false },
+            },
+            thumb_file: {
+              isVisible: { list: false, filter: false, show: false, edit: true },
+            },
+            thumb_path: {
+              isVisible: false,
+            },
+            thumb_to_delete: {
+              isVisible: false,
             },
             order_index: {
               description: 'Menor número aparece primeiro',
             },
           },
-          listProperties: ['id', 'title', 'order_index'],
+          listProperties: ['id', 'title', 'thumb_url', 'order_index'],
           showProperties: ['id', 'title', 'thumb_url', 'order_index'],
-          editProperties: ['title', 'order_index'],
+          editProperties: ['title', 'thumb_file', 'order_index'],
           filterProperties: ['title'],
-          actions: {
-            edit: {
-              after: async (response: any) => {
-                return response;
-              },
-            },
-          },
         },
         features: [campaignUploadFeature],
       },
@@ -75,26 +73,32 @@ export const setupAdmin = async () => {
             },
             campaign_id: {
               isRequired: true,
+              // Configuração correta para relacionamento
+              type: 'reference',
               reference: 'campaigns',
+              // Importante: mostrar no edit para poder selecionar
+              isVisible: { list: true, filter: true, show: true, edit: true },
             },
             image_url: {
-              isVisible: { list: false, filter: false, show: true, edit: false },
+              isVisible: { list: true, filter: false, show: true, edit: false },
+            },
+            image_file: {
+              isVisible: { list: false, filter: false, show: false, edit: true },
+            },
+            image_path: {
+              isVisible: false,
+            },
+            image_to_delete: {
+              isVisible: false,
             },
             order_index: {
               description: 'Ordem de exibição (menor = primeiro)',
             },
           },
-          listProperties: ['id', 'campaign_id', 'order_index'],
+          listProperties: ['id', 'campaign_id', 'image_url', 'order_index'],
           showProperties: ['id', 'campaign_id', 'image_url', 'order_index'],
-          editProperties: ['campaign_id', 'order_index'],
+          editProperties: ['campaign_id', 'image_file', 'order_index'],
           filterProperties: ['campaign_id'],
-          actions: {
-            edit: {
-              after: async (response: any) => {
-                return response;
-              },
-            },
-          },
         },
         features: [galleryUploadFeature],
       },
@@ -108,12 +112,10 @@ export const setupAdmin = async () => {
 
   const admin = new AdminJS(adminOptions);
 
-  // Adicionar watch para desenvolvimento
   if (process.env.NODE_ENV !== 'production') {
     admin.watch();
   }
 
-  // Autenticação
   const authenticate = async (email: string, password: string) => {
     const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
     const adminPassword = process.env.ADMIN_PASSWORD || 'senha123';
@@ -138,7 +140,7 @@ export const setupAdmin = async () => {
       cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 1000 * 60 * 60 * 24, // 24 horas
+        maxAge: 1000 * 60 * 60 * 24,
       },
     }
   );

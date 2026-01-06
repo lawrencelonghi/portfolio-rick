@@ -3,9 +3,29 @@ import { pool } from '../db/database.js';
 
 const router = express.Router();
 
+// Helper para normalizar URLs
+const normalizeUrl = (url: string | null, baseUrl: string, uploadPath: string): string | null => {
+  if (!url) return null;
+  
+  // Se já é URL completa (http/https), retorna como está
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  
+  // Se já começa com /, retorna completo
+  if (url.startsWith('/')) {
+    return `${baseUrl}${url}`;
+  }
+  
+  // Caso contrário, adiciona o prefixo do upload path
+  return `${baseUrl}${uploadPath}/${url}`;
+};
+
 // GET /api/works - Retorna todas as campanhas com suas imagens
 router.get('/', async (req, res) => {
   try {
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+
     // Buscar todas as campanhas ordenadas
     const campaignsResult = await pool.query(
       'SELECT * FROM campaigns ORDER BY order_index ASC, id ASC'
@@ -19,16 +39,24 @@ router.get('/', async (req, res) => {
           [campaign.id]
         );
 
+        // Construir URL completa para o thumb
+        const thumbUrl = normalizeUrl(campaign.thumb_url, baseUrl, '/uploads/campaigns');
+
         return {
           campaign: campaign.title,
           cover: {
-            file_url: campaign.thumb_url,
+            file_url: thumbUrl,
             title: campaign.title
           },
-          items: imagesResult.rows.map(img => ({
-            file_url: img.image_url,
-            title: `${campaign.title} - ${img.order_index || img.id}`
-          }))
+          items: imagesResult.rows.map(img => {
+            // Construir URL completa para cada imagem
+            const imageUrl = normalizeUrl(img.image_url, baseUrl, '/uploads/gallery');
+
+            return {
+              file_url: imageUrl,
+              title: `${campaign.title} - ${img.order_index || img.id}`
+            };
+          })
         };
       })
     );
