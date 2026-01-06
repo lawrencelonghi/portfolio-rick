@@ -1,10 +1,8 @@
-// src/admin/adminConfig.ts
 import AdminJS from 'adminjs';
 import AdminJSExpress from '@adminjs/express';
-import { Database, Resource } from '@adminjs/sql';
-import pkg from 'pg';
-const { Pool } = pkg;
+import Adapter, { Database, Resource } from '@adminjs/sql';
 import dotenv from 'dotenv';
+import { campaignUploadFeature, galleryUploadFeature, componentLoader } from './uploadFeature.js';
 
 dotenv.config();
 
@@ -14,29 +12,22 @@ AdminJS.registerAdapter({
   Resource,
 });
 
-// Função para criar a conexão do AdminJS
 export const setupAdmin = async () => {
-  // Criar pool de conexão do PostgreSQL
-  const pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST || 'localhost',
+  // Criar connection string do PostgreSQL
+  const connectionString = `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || '5432'}/${process.env.DB_NAME || 'portfolio_db'}`;
+
+  // Conectar ao banco usando Adapter
+  const db = await new Adapter('postgresql', {
+    connectionString,
     database: process.env.DB_NAME || 'portfolio_db',
-    password: process.env.DB_PASSWORD,
-    port: parseInt(process.env.DB_PORT || '5432'),
-  });
+  }).init();
 
-  // Conectar ao banco e obter os metadados
-  const db = await Database.init(pool);
-
-  // Pegar os recursos das tabelas
-  const campaigns = db.tables.find((table: any) => table.tableName === 'campaigns');
-  const campaignImages = db.tables.find((table: any) => table.tableName === 'campaign_images');
-
-  // Configurar recursos
+  // Configurar recursos usando db.table()
   const adminOptions = {
+    componentLoader,
     resources: [
       {
-        resource: new Resource(campaigns),
+        resource: db.table('campaigns'),
         options: {
           navigation: {
             name: 'Portfolio',
@@ -49,23 +40,30 @@ export const setupAdmin = async () => {
             title: { 
               isTitle: true,
               isRequired: true,
-              label: 'Título da Campanha',
             },
             thumb_url: {
-              type: 'string' as const,
-              label: 'URL da Thumbnail',
-              description: 'Imagem principal que aparecerá na homepage',
+              isVisible: { list: false, filter: false, show: true, edit: false },
             },
             order_index: {
-              type: 'number' as const,
-              label: 'Ordem de Exibição',
-              description: 'Ordem em que aparece na homepage (menor = primeiro)',
+              description: 'Menor número aparece primeiro',
+            },
+          },
+          listProperties: ['id', 'title', 'order_index'],
+          showProperties: ['id', 'title', 'thumb_url', 'order_index'],
+          editProperties: ['title', 'order_index'],
+          filterProperties: ['title'],
+          actions: {
+            edit: {
+              after: async (response: any) => {
+                return response;
+              },
             },
           },
         },
+        features: [campaignUploadFeature],
       },
       {
-        resource: new Resource(campaignImages),
+        resource: db.table('campaign_images'),
         options: {
           navigation: {
             name: 'Portfolio',
@@ -77,31 +75,43 @@ export const setupAdmin = async () => {
             },
             campaign_id: {
               isRequired: true,
-              label: 'Campanha',
               reference: 'campaigns',
             },
             image_url: {
-              type: 'string' as const,
-              isRequired: true,
-              label: 'URL da Imagem',
+              isVisible: { list: false, filter: false, show: true, edit: false },
             },
             order_index: {
-              type: 'number' as const,
-              label: 'Ordem',
-              description: 'Ordem em que aparece no modal (menor = primeiro)',
+              description: 'Ordem de exibição (menor = primeiro)',
+            },
+          },
+          listProperties: ['id', 'campaign_id', 'order_index'],
+          showProperties: ['id', 'campaign_id', 'image_url', 'order_index'],
+          editProperties: ['campaign_id', 'order_index'],
+          filterProperties: ['campaign_id'],
+          actions: {
+            edit: {
+              after: async (response: any) => {
+                return response;
+              },
             },
           },
         },
+        features: [galleryUploadFeature],
       },
     ],
     rootPath: '/admin',
     branding: {
-      companyName: 'Rick Portfolio Admin',
+      companyName: 'Rick Tadeu - Portfolio Admin',
       withMadeWithLove: false,
     },
   };
 
   const admin = new AdminJS(adminOptions);
+
+  // Adicionar watch para desenvolvimento
+  if (process.env.NODE_ENV !== 'production') {
+    admin.watch();
+  }
 
   // Autenticação
   const authenticate = async (email: string, password: string) => {
