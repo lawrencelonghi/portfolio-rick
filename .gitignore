@@ -1,56 +1,78 @@
-# ============================
-# Python / Django
-# ============================
-*.pyc
-__pycache__/
-*.pyo
-*.pyd
-*.sqlite3
-db.sqlite3
+# === DEPENDÊNCIAS ===
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
 
-# Django specific
-server/db.sqlite3
-server/media/
-server/__pycache__/
-server/*.pyc
-server/static
-server/staticfiles
-server/templates
+# === VARIÁVEIS DE AMBIENTE ===
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Virtual environments
-venv/
-.venv/
-ENV/
-server/venv/
+# === UPLOADS E ARQUIVOS ===
+server/uploads/*
+!server/uploads/.gitkeep
+*.log
 
-# ignore default env files
-.env*
+# === BUILD E DIST ===
+dist/
+dist-ssr/
+build/
+*.local
 
-# ignore env files in server and client, except production
-server/.env*
-client/.env*
+# === CACHE ===
+.cache/
+.parcel-cache/
+.eslintcache
 
-# optionally, ignore development env specifically
-client/.env.development
-client/.env.production
+# === TESTES ===
+coverage/
+*.lcov
+.nyc_output/
 
-
-# ============================
-# Node / React (Vite)
-# ============================
-client/node_modules/
-client/dist/
-
-# ============================
-# OS / Editor junk
-# ============================
+# === EDITORES E IDEs ===
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*.swo
+*~
 .DS_Store
 Thumbs.db
-*.log
 
-# Docker
-*.pid
-*.sock
-*.tar
+# === TEMPORÁRIOS ===
+tmp/
+temp/
+*.tmp
+
+# === CERTIFICADOS E CHAVES ===
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+
+# === BACKUPS ===
+*.backup
+*.bak
+*.old
+
+# === SISTEMA OPERACIONAL ===
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# === TYPESCRIPT ===
+*.tsbuildinfo
+
+# === LOGS ===
+logs/
 *.log
-__pycache__/

@@ -17,7 +17,7 @@ export const About = () => {
   return (
     <section id="about" className="ml-8 mr-8 pt-20 md:pt-28 flex gap-30 relative">
       <div data-aos="fade-right" className="hidden z-10 space-y-18 md:flex flex-col items-center">
-        <img src="/static/about-img.png" alt="Ricardo Tadeu" />
+        <img src="/about-img.png" alt="Ricardo Tadeu" />
       </div>
       <div data-aos="fade-left" className="max-w-prose mx-auto tracking-wider text-sm space-y-6">
         <p>{t("aboutParagraph1")}</p>

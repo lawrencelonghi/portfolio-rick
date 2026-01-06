@@ -8,6 +8,7 @@ import { About } from './components/sections/About'
 import { Contact } from './components/sections/Contact'
 import smoothscroll from 'smoothscroll-polyfill';
 
+
 // Ativa o polyfill ANTES de tudo
 smoothscroll.polyfill();
 
