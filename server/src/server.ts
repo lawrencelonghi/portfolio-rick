@@ -1,74 +1,38 @@
-import express from "express";
-import cors from 'cors';
-import dotenv from 'dotenv';
-import { fileURLToPath } from "node:url";
-import path from "node:path";
-import { createTables, pool } from './db/database.js';
-import { setupAdmin } from './admin/adminConfig.js';
-import worksRouter from './routes/works.js';
+import express from "express"
+import dotenv from "dotenv"
+import path from "path";
+import cors from "cors"
+import authRoutes from './routes/auth.js'
+import campaignRoutes from './routes/campaigns.js';
 
-dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+dotenv.config()
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+const __dirname = path.resolve();
 
-app.use(cors());
-app.use(express.json());
+const PORT = process.env.PORT
 
-// Servir arquivos de upload como estáticos
-app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
+const app = express()
 
-// Inicializar banco de dados e AdminJS
-const initializeApp = async () => {
-  try {
-    // Criar tabelas
-    await createTables();
-    console.log('✓ Banco de dados inicializado');
+//middlewares below
+app.use(express.static(path.join(__dirname, "../client/dist")))
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(cors({
+  origin: process.env.CLIENT_URL || "http://localhost:5173", // URL do frontend React
+  credentials: true
+}));
 
-    // Configurar AdminJS
-    const { admin, adminRouter } = await setupAdmin();
-    app.use(admin.options.rootPath, adminRouter);
-    console.log(`✓ AdminJS disponível em http://localhost:${PORT}${admin.options.rootPath}`);
+//test route
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', message: 'Server is running' })
+})
 
-    // Rotas da API
-    app.use('/api/works', worksRouter);
+app.use('/api/auth', authRoutes)
+app.use('/api/campaigns', campaignRoutes)
 
-    // Em desenvolvimento, redirecionar para o Vite dev server
-    if (process.env.NODE_ENV !== 'production') {
-      app.get('/', (req, res) => {
-        res.redirect('http://localhost:5173');
-      });
-    } else {
-      // Em produção, servir arquivos estáticos
-      app.use(express.static(path.join(__dirname, '../../client/dist')));
-      
-      app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, '../../client/dist/index.html'), 
-          (error) => {
-            if (error) {
-              console.error('Error sending file:', error);
-              if (!res.headersSent) {
-                res.status(500).send('Internal server error');
-              }
-            }
-          }
-        );
-      });
-    }
+app.listen(PORT, () => {
+  console.log(`Server is running on localhost:${PORT}`);
+})
 
-    app.listen(PORT, () => {
-      console.log(`✓ Server rodando em http://localhost:${PORT}`);
-      console.log(`✓ AdminJS: http://localhost:${PORT}/admin`);
-      console.log(`✓ API: http://localhost:${PORT}/api/works`);
-    });
-
-  } catch (error) {
-    console.error('Erro ao inicializar servidor:', error);
-    process.exit(1);
-  }
-};
-
-initializeApp();
