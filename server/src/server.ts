@@ -4,6 +4,7 @@ import path from "path";
 import cors from "cors"
 import authRoutes from './routes/auth.js'
 import campaignRoutes from './routes/campaigns.js';
+import imageRoutes from './routes/images.js';
 
 
 dotenv.config()
@@ -15,8 +16,11 @@ const PORT = process.env.PORT
 const app = express()
 
 //middlewares below
+
+//serve frontend static files
 app.use(express.static(path.join(__dirname, "../client/dist")))
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+//serve static images files
+app.use('/uploads', express.static('uploads'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({
@@ -31,6 +35,8 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', authRoutes)
 app.use('/api/campaigns', campaignRoutes)
+app.use('/api/campaigns', imageRoutes);
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on localhost:${PORT}`);
