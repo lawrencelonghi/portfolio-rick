@@ -13,10 +13,10 @@ export const Work = () => {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [campaigns, setCampaigns] = useState([]);
 
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
   useEffect(() => {
-    fetch(`${BACKEND_URL}/api/works/`)
+    fetch(`${BACKEND_URL}/api/campaigns`)
       .then((res) => res.json())
       .then((data) => {
         setCampaigns(data);
@@ -24,27 +24,26 @@ export const Work = () => {
       .catch(console.error);
   }, []);
 
-  const formatItemsForLightbox = (items) => {
-    return items
-      .filter((item) => item.file_url)
-      .map((item) => {
-        const url = item.file_url;
-        const ext = url.split(".").pop().toLowerCase();
+  const formatImagesForLightbox = (images) => {
+    return images.map((image) => {
+      const url = `${BACKEND_URL}${image.path}`;
+      const ext = image.filename.split(".").pop().toLowerCase();
 
-        if (["mp4", "webm", "ogg"].includes(ext)) {
-          return {
-            type: "video",
-            title: item.title || "Untitled",
-            sources: [{ src: url, type: `video/${ext}` }],
-          };
-        } else {
-          return {
-            type: "image",
-            src: url,
-            title: item.title || "Untitled",
-          };
-        }
-      });
+      // Suporte para vídeos (caso você adicione no futuro)
+      if (["mp4", "webm", "ogg"].includes(ext)) {
+        return {
+          type: "video",
+          title: image.filename || "Untitled",
+          sources: [{ src: url, type: `video/${ext}` }],
+        };
+      } else {
+        return {
+          type: "image",
+          src: url,
+          title: image.filename || "Untitled",
+        };
+      }
+    });
   };
 
   const handleCoverClick = (campaign) => {
@@ -52,22 +51,23 @@ export const Work = () => {
     setOpen(true);
   };
 
-  const renderCoverMedia = (cover) => {
-    if (!cover || !cover.file_url) return null;
+  const renderThumbnail = (campaign) => {
+    if (!campaign.thumbnail) return null;
 
-    const ext = cover.file_url.split(".").pop().toLowerCase();
+    const url = `${BACKEND_URL}${campaign.thumbnail.path}`;
+    const ext = campaign.thumbnail.filename.split(".").pop().toLowerCase();
     const isVideo = ["mp4", "webm", "ogg"].includes(ext);
 
     return isVideo ? (
       <video
-        src={cover.file_url}
+        src={url}
         className="cursor-pointer object-cover w-full h-auto"
         muted
       />
     ) : (
       <img
-        src={cover.file_url}
-        alt={cover.title}
+        src={url}
+        alt={campaign.title}
         className="cursor-pointer object-cover w-full h-auto"
       />
     );
@@ -76,10 +76,10 @@ export const Work = () => {
   return (
     <section id="work" className="scroll-mt-28 mt-24 md:mt-40 m-5 p-2">
       <div className="bento gap-2">
-        {campaigns.map((campaign, i) => (
-          <div key={i} className="relative mb-2 group">
+        {campaigns.map((campaign) => (
+          <div key={campaign.id} className="relative mb-2 group">
             <div onClick={() => handleCoverClick(campaign)}>
-              {renderCoverMedia(campaign.cover)}
+              {renderThumbnail(campaign)}
             </div>
 
             <div
@@ -87,9 +87,10 @@ export const Work = () => {
               className="absolute cursor-pointer inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity"
             >
               <div className="text-center">
-                <span className="font-medium block">{campaign.campaign}</span>
+                <span className="font-medium block">{campaign.title}</span>
                 <span className="text-sm opacity-75">
-                  {campaign.items.length} {campaign.items.length === 1 ? "foto" : "fotos"}
+                  {campaign.images?.length || 0}{" "}
+                  {campaign.images?.length === 1 ? "foto" : "fotos"}
                 </span>
               </div>
             </div>
@@ -105,17 +106,16 @@ export const Work = () => {
             setOpen(false);
             setSelectedCampaign(null);
           }}
-          slides={formatItemsForLightbox(selectedCampaign.items)}
+          slides={formatImagesForLightbox(selectedCampaign.images || [])}
           index={0}
-          // carousel={{ finite: selectedCampaign.items.length <= 10 }}
-          thumbnails={{ 
-            width: 80, 
-            height: 80, 
-            border: 0, 
+          thumbnails={{
+            width: 80,
+            height: 80,
+            border: 0,
             borderRadius: 0,
             padding: 0,
             gap: 8,
-            vignette: false
+            vignette: false,
           }}
           styles={{
             container: { backgroundColor: "#fff" },
@@ -128,3 +128,5 @@ export const Work = () => {
     </section>
   );
 };
+
+export default Work;

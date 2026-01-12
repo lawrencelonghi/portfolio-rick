@@ -7,13 +7,21 @@ pnpm-debug.log*
 .env
 .env.local
 .env.development.local
+.env.development
 .env.test.local
 .env.production.local
+.env.production
 
 # === UPLOADS E ARQUIVOS ===
 server/uploads/*
 !server/uploads/.gitkeep
 *.log
+
+# Banco de dados
+prisma/dev.db
+prisma/dev.db-journal
+*.db
+*.db-journal
 
 # === BUILD E DIST ===
 dist/
@@ -25,6 +33,10 @@ build/
 .cache/
 .parcel-cache/
 .eslintcache
+
+# Uploads (imagens)
+uploads/
+
 
 # === TESTES ===
 coverage/
@@ -76,3 +88,4 @@ Desktop.ini
 # === LOGS ===
 logs/
 *.log
+npm-debug.log*
