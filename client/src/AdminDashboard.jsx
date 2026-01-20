@@ -80,6 +80,7 @@ const SortableCampaign = ({ campaign, onSelect, backendUrl }) => {
 };
 
 // Componente de Imagem Sortable
+// Componente de Imagem Sortable
 const SortableImage = ({ image, isThumb, onSetThumb, onDelete, backendUrl }) => {
   const {
     attributes,
@@ -99,21 +100,31 @@ const SortableImage = ({ image, isThumb, onSetThumb, onDelete, backendUrl }) => 
   return (
     <div 
       ref={setNodeRef} 
-      style={style} 
-      {...attributes} 
-      {...listeners}
-      className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden group cursor-grab active:cursor-grabbing"
+      style={style}
+      className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden group"
     >
+      {/* Drag Handle */}
+      <button
+        {...attributes}
+        {...listeners}
+        className="absolute top-2 right-2 z-10 p-2 bg-white/90 hover:bg-white rounded shadow-sm cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity"
+        aria-label="Arrastar imagem"
+      >
+        <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+        </svg>
+      </button>
+
       {/* Imagem */}
       <img
         src={`${backendUrl}${image.path}`}
         alt={image.filename}
-        className="w-full h-full object-cover pointer-events-none"
+        className="w-full h-full object-cover"
       />
 
       {/* Badge de Capa */}
       {isThumb && (
-        <div className="absolute top-2 left-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded text-xs font-medium z-10 pointer-events-none">
+        <div className="absolute top-2 left-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded text-xs font-medium z-10">
           ★ CAPA
         </div>
       )}
@@ -125,7 +136,7 @@ const SortableImage = ({ image, isThumb, onSetThumb, onDelete, backendUrl }) => 
             e.stopPropagation();
             onSetThumb(image.id);
           }}
-          className="flex-1 px-3 py-2 bg-white text-gray-900 text-sm rounded hover:bg-gray-100 font-medium pointer-events-auto"
+          className="flex-1 px-3 py-2 bg-white text-gray-900 text-sm rounded hover:bg-gray-100 font-medium"
         >
           {isThumb ? '★ Capa' : 'Definir Capa'}
         </button>
@@ -134,7 +145,7 @@ const SortableImage = ({ image, isThumb, onSetThumb, onDelete, backendUrl }) => 
             e.stopPropagation();
             onDelete(image.id);
           }}
-          className="px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 font-medium pointer-events-auto"
+          className="px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 font-medium"
         >
           Deletar
         </button>
