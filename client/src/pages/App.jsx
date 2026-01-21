@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import './index.css'
-import './App.css'
-import { Navbar } from './components/Navbar'
-import { MobileMenu } from './components/MobileMenu'
-import { Work } from './components/sections/Work'
-import { About } from './components/sections/About'
-import { Contact } from './components/sections/Contact'
+import '../../src/index.css'
+import '../../src/App.css'
+import { Navbar } from '../components/home-components/Navbar'
+import { MobileMenu } from '../components/home-components/MobileMenu'
+import { Work } from '../components/home-components/Work'
+import { About } from '../components/home-components/About'
+import { Contact } from '../components/home-components/Contact'
 import smoothscroll from 'smoothscroll-polyfill';
 
 
@@ -14,7 +14,7 @@ smoothscroll.polyfill();
 
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import Footer from './components/sections/Footer'
+import Footer from '../components/home-components/Footer'
 
 function App() {
   const [fadeIn, setFadeIn] = useState(false);

@@ -10,7 +10,7 @@ const router = Router()
 const prisma = new PrismaClient()
 
 //POST /api/campaigns/:campagingId/images upload image
-router.post('/:campaignId/images', authMiddleware, upload.array('images', 10), async (req: Request, res: Response) => {
+router.post('/campaign/:campaignId', authMiddleware, upload.array('images', 10), async (req: Request, res: Response) => {
   try {
 
     const campaignId = req.params.campaignId
