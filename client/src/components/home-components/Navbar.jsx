@@ -83,7 +83,23 @@ export const Navbar = ({ menuOpen, setMenuOpen }) => {
           <a href="#contact" className={`text-xl transition-colors duration-500 ${darkLinks ? "text-gray-900" : "text-gray-500"} hover:text-gray-950`}>
             {t("contact")}
           </a>
-          <button onClick={toggleLang} className="ml-6 px-2 py-1 border rounded cursor-pointer text-sm">
+
+          <div className="flex gap-6">
+            <div className=" max-w-xs w-full">
+              <a href="https://www.instagram.com/rick_makeup/" className="cursor-pointer " target="_blank" rel="noopener noreferrer">
+                <img src="/instagram-logo-thin-svgrepo-com.svg" className="w-6" />
+              </a>
+            </div> 
+
+            <div className=" max-w-xs w-full">
+              
+              <a href="mailto:makeup.rick@gmail.com" className="cursor-pointer" target="_blank" rel="noopener noreferrer">
+               <img src="/email-logo.png" className="w-6" />
+              </a>
+            </div> 
+          </div>
+
+          <button onClick={toggleLang} className=" px-1 py-0.5 border rounded cursor-pointer text-xs">
             {i18n.language.toUpperCase()}
           </button>
         </div>

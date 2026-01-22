@@ -37,3 +37,10 @@ model Image {
   
   @@index([campaignId])
 }
+
+model profileImage {
+  id       String  @id @default(uuid())
+  filename String
+  path     String
+
+}

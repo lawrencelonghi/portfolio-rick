@@ -5,6 +5,7 @@ import cors from "cors"
 import authRoutes from './routes/auth.js'
 import campaignRoutes from './routes/campaigns.js';
 import imageRoutes from './routes/images.js';
+import profileImageRoute from './routes/profile-image.js';
 
 
 dotenv.config()
@@ -36,6 +37,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes)
 app.use('/api/campaigns', campaignRoutes)
 app.use('/api/images', imageRoutes);
+app.use('/api/profile-image', profileImageRoute);
 
 
 app.listen(PORT, () => {

@@ -40,7 +40,7 @@ export const SortableCampaign = ({ campaign, onSelect, backendUrl }) => {
               <img
                 src={`${backendUrl}${campaign.thumbnail.path}`}
                 alt={campaign.title}
-                className="w-full h-full object-cover"
+                className=" w-full h-full object-cover"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-gray-400">

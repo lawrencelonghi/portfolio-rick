@@ -27,6 +27,7 @@ export const AdminDashboard = () => {
   const [newCampaignDescription, setNewCampaignDescription] = useState('');
   const [editingTitle, setEditingTitle] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [newProfileImage, setNewProfileImage] = useState(null);
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
@@ -46,6 +47,20 @@ export const AdminDashboard = () => {
       setEditingTitle(selectedCampaign.title);
     }
   }, [selectedCampaign]);
+
+    useEffect(() => {
+    const fetchProfileImage = async () => {
+      try {
+        const { data } = await api.get('/api/profile-image');
+        console.log('Dados recebidos da API:', data); // Debug
+        setNewProfileImage(data);
+      } catch (error) {
+        console.error('Erro ao buscar imagem de perfil:', error);
+      }
+    };
+
+    fetchProfileImage();
+  }, []);
 
   const loadCampaigns = async () => {
     try {
@@ -136,6 +151,31 @@ export const AdminDashboard = () => {
       e.target.value = '';
     }
   };
+
+ const handleUploadProfileImage = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  setUploading(true);
+
+  try {
+    const formData = new FormData();
+    formData.append('profileImage', file);
+
+    await api.put('/api/profile-image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+
+    const { data } = await api.get('/api/profile-image');
+    setNewProfileImage(data); 
+  } catch (error) {
+    console.error('Erro ao fazer upload:', error);
+    alert('Erro ao fazer upload da imagem de perfil');
+  } finally {
+    setUploading(false);
+    e.target.value = '';
+  }
+}
 
   const handleSetThumbnail = async (imageId) => {
     try {
@@ -240,7 +280,7 @@ export const AdminDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-sm text-gray-500">Olá, {user?.username}</p>
+            <p className="text-sm text-gray-500">Oi, {user?.username}</p>
           </div>
           <button
             onClick={logout}
@@ -291,7 +331,44 @@ export const AdminDashboard = () => {
                 </SortableContext>
               </DndContext>
             )}
-          </div>
+
+           {/* IMAGEM DO PERFIL */}
+            <div className='mt-6 md:mt-8'>
+              <div className='flex justify-between'>
+              <h2 className="text-xl font-semibold text-gray-900">
+                Imagem de Perfil
+              </h2>
+
+            <div className="mb-6">
+              <input
+                type="file"
+                id="image-upload"
+                accept="image/*"
+                onChange={handleUploadProfileImage}
+                className="hidden"
+              />
+              <label
+                htmlFor="image-upload"
+                className={`inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition cursor-pointer ${
+                  uploading ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
+                {uploading ? 'Enviando...' : '+ Adicionar Imagem de perfil'}
+              </label>
+            </div>
+              </div>
+              <div>
+                {newProfileImage?.path ? (
+                  <div>
+                    <img className='max-w-xs w-full' 
+                        src={`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}${newProfileImage.path}`} alt="Imagem de perfil" />
+                  </div>
+                ) : (
+                  <p>nenhuma imagem adicionada</p>
+                )}
+              </div>
+            </div>
+          </div>        
         ) : (
           <div>
             <div className="mb-6">
