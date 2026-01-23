@@ -38,9 +38,17 @@ model ImgVdo {
   @@index([campaignId])
 }
 
-model profileImage {
+model ProfileImage {
   id       String  @id @default(uuid())
   filename String
   path     String
 
+}
+
+model ProfileText {
+  id        String   @id @default(uuid())
+  textPt    String   
+  textEn    String   
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 }

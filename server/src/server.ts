@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.js'
 import campaignRoutes from './routes/campaigns.js';
 import filesRoute from './routes/files.js';
 import profileImageRoute from './routes/profile-image.js';
+import profileTextsRoute from './routes/profile-texts.js';
 
 
 dotenv.config()
@@ -38,6 +39,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/campaigns', campaignRoutes)
 app.use('/api/imgVdos', filesRoute);
 app.use('/api/profile-image', profileImageRoute);
+app.use('/api/profile-texts', profileTextsRoute);
 
 
 app.listen(PORT, () => {

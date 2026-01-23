@@ -28,6 +28,10 @@ export const AdminDashboard = () => {
   const [editingTitle, setEditingTitle] = useState('');
   const [uploading, setUploading] = useState(false);
   const [newProfileImage, setNewProfileImage] = useState(null);
+  const [newProfileText, setNewProfileText] = useState({
+        textPt: '',
+        textEn: ''
+      });
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
@@ -52,7 +56,7 @@ export const AdminDashboard = () => {
     const fetchProfileImage = async () => {
       try {
         const { data } = await api.get('/api/profile-image');
-        console.log('Dados recebidos da API:', data); // Debug
+        
         setNewProfileImage(data);
       } catch (error) {
         console.error('Erro ao buscar imagem de perfil:', error);
@@ -61,6 +65,19 @@ export const AdminDashboard = () => {
 
     fetchProfileImage();
   }, []);
+
+  useEffect(() => {
+    const fetchProfileText = async () => {
+      try {
+        const { data } = await api.get('/api/profile-texts');
+        console.log('Dados recebidos da API como texto do perfil:', data); // Debug
+        setNewProfileText(data)
+      } catch (error) {
+        console.error('Erro ao buscar texto de perfil:', error);
+      }
+    };
+    fetchProfileText();
+  }, [])
 
   const loadCampaigns = async () => {
     try {
@@ -174,6 +191,20 @@ export const AdminDashboard = () => {
   } finally {
     setUploading(false);
     e.target.value = '';
+  }
+}
+const handleUpdateProfileText = async (language) => {
+  try {
+    const update = language === 'pt' 
+      ? { textPt: newProfileText.textPt }
+      : { textEn: newProfileText.textEn };
+
+    await api.put('/api/profile-texts', update);
+    
+    alert(`Texto em ${language === 'pt' ? 'português' : 'inglês'} atualizado com sucesso!`);
+  } catch (error) {
+    console.error('Erro ao atualizar texto de perfil:', error);
+    alert('Erro ao atualizar texto de perfil');
   }
 }
 
@@ -336,7 +367,7 @@ export const AdminDashboard = () => {
             <div className='mt-6 md:mt-8'>
               <div className='flex justify-between'>
               <h2 className="text-xl font-semibold text-gray-900">
-                Imagem de Perfil
+                Imagem do Perfil
               </h2>
 
             <div className="mb-6">
@@ -368,6 +399,68 @@ export const AdminDashboard = () => {
                 )}
               </div>
             </div>
+
+            {/* AREA DOS TEXTOS */}
+         <div>
+  <div className='mt-6 md:mt-8'>
+    <h2 className="text-xl font-semibold text-gray-900">Textos do perfil</h2>
+    <p className="text-sm text-gray-500 mt-1">
+      Dica: Pressione Enter para criar parágrafos separados
+    </p>
+  </div>
+
+  <div className='mt-6 md:mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6'>
+    {/* Texto em Português */}
+    <div className='flex flex-col gap-4'>
+      <label htmlFor="profile-pt-text" className="font-medium">
+        Texto em português
+      </label>
+      <textarea
+        id="profile-pt-text"
+        className='w-full px-3 py-2 border border-gray-300 
+        rounded focus:outline-none focus:ring-2 focus:ring-blue-500 
+        min-h-[200px] resize-y'
+        value={newProfileText.textPt}
+        onChange={(e) => setNewProfileText(prev => ({
+          ...prev,
+          textPt: e.target.value
+        }))}
+        placeholder="Digite o texto em português. Pressione Enter para criar novos parágrafos."
+      />
+      <button 
+        className='max-w-xs px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition cursor-pointer'
+        onClick={() => handleUpdateProfileText('pt')}
+      >
+        Alterar texto em português
+      </button>
+    </div>
+
+    {/* Texto em Inglês */}
+    <div className='flex flex-col gap-4'>
+      <label htmlFor="profile-en-text" className="font-medium">
+        Texto em inglês
+      </label>
+      <textarea
+        id="profile-en-text"
+        className='w-full px-3 py-2 border border-gray-300 
+        rounded focus:outline-none focus:ring-2 focus:ring-blue-500 
+        min-h-[200px] resize-y'
+        value={newProfileText.textEn}
+        onChange={(e) => setNewProfileText(prev => ({
+          ...prev,
+          textEn: e.target.value
+        }))}
+        placeholder="Type the text in English. Press Enter to create new paragraphs."
+      />
+      <button 
+        className='max-w-xs px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition cursor-pointer'
+        onClick={() => handleUpdateProfileText('en')}
+      >
+        Alterar texto em inglês
+      </button>
+    </div>
+  </div>
+</div>
           </div>        
         ) : (
           <div>
