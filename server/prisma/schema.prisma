@@ -21,11 +21,11 @@ model Campaign {
   order       Int      @default(0)
   createdAt   DateTime @default(now())
   
-  images    Image[]
-  thumbnail Image?  @relation("CampaignThumbnail", fields: [thumbnailId], references: [id], onDelete: SetNull)
+  imgVdos    ImgVdo[]
+  thumbnail  ImgVdo?  @relation("CampaignThumbnail", fields: [thumbnailId], references: [id], onDelete: SetNull)
 }
 
-model Image {
+model ImgVdo {
   id         String   @id @default(uuid())
   filename   String
   path       String

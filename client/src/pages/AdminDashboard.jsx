@@ -15,7 +15,7 @@ import {
   sortableKeyboardCoordinates,
   rectSortingStrategy,
 } from '@dnd-kit/sortable';
-import { SortableCampaign, SortableImage } from '../components/admin-components/SortableComponents';
+import { SortableCampaign, SortableImgVdo } from '../components/admin-components/SortableComponents';
 
 export const AdminDashboard = () => {
   const { user, logout } = useAuth();
@@ -124,7 +124,7 @@ export const AdminDashboard = () => {
     }
   };
 
-  const handleUploadImages = async (e) => {
+  const handleUploadImgVdos = async (e) => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
 
@@ -133,10 +133,10 @@ export const AdminDashboard = () => {
     try {
       const formData = new FormData();
       files.forEach(file => {
-        formData.append('images', file);
+        formData.append('imgVdos', file);
       });
 
-      await api.post(`/api/images/campaign/${selectedCampaign.id}`, formData, {
+      await api.post(`/api/imgVdos/campaign/${selectedCampaign.id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -177,11 +177,11 @@ export const AdminDashboard = () => {
   }
 }
 
-  const handleSetThumbnail = async (imageId) => {
+  const handleSetThumbnail = async (imgVdoId) => {
     try {
-      await api.put(`/api/campaigns/${selectedCampaign.id}/thumbnail`, { imageId });
+      await api.put(`/api/campaigns/${selectedCampaign.id}/thumbnail`, { imgVdoId });
       
-      setSelectedCampaign({ ...selectedCampaign, thumbnailId: imageId });
+      setSelectedCampaign({ ...selectedCampaign, thumbnailId: imgVdoId });
       loadCampaigns();
     } catch (error) {
       console.error('Erro ao definir thumbnail:', error);
@@ -189,19 +189,19 @@ export const AdminDashboard = () => {
     }
   };
 
-  const handleDeleteImage = async (imageId) => {
+  const handleDeleteImgVdo = async (imgVdoId) => {
     if (!confirm('Tem certeza que deseja deletar esta imagem?')) {
       return;
     }
 
     try {
-      await api.delete(`/api/images/${imageId}`);
+      await api.delete(`/api/imgVdos/${imgVdoId}`);
       
-      const updatedImages = selectedCampaign.images.filter(img => img.id !== imageId);
+      const updatedImgVdos = selectedCampaign.imgVdos.filter(img => img.id !== imgVdoId);
       setSelectedCampaign({
         ...selectedCampaign,
-        images: updatedImages,
-        thumbnailId: selectedCampaign.thumbnailId === imageId ? null : selectedCampaign.thumbnailId
+        imgVdos: updatedImgVdos,
+        thumbnailId: selectedCampaign.thumbnailId === imgVdoId ? null : selectedCampaign.thumbnailId
       });
       loadCampaigns();
     } catch (error) {
@@ -233,21 +233,21 @@ export const AdminDashboard = () => {
     }
   };
 
-  const handleDragEndImages = async (event) => {
+  const handleDragEndImgVdos = async (event) => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      const images = selectedCampaign.images;
-      const oldIndex = images.findIndex((img) => img.id === active.id);
-      const newIndex = images.findIndex((img) => img.id === over.id);
+      const imgVdos = selectedCampaign.imgVdos;
+      const oldIndex = imgVdos.findIndex((img) => img.id === active.id);
+      const newIndex = imgVdos.findIndex((img) => img.id === over.id);
 
-      const newImages = arrayMove(images, oldIndex, newIndex);
-      setSelectedCampaign({ ...selectedCampaign, images: newImages });
+      const newImgVdos = arrayMove(imgVdos, oldIndex, newIndex);
+      setSelectedCampaign({ ...selectedCampaign, imgVdos: newImgVdos });
 
       try {
         await Promise.all(
-          newImages.map((image, index) =>
-            api.put(`/api/images/${image.id}/order`, { order: index })
+          newImgVdos.map((imgVdo, index) =>
+            api.put(`/api/imgVdos/${imgVdo.id}/order`, { order: index })
           )
         );
       } catch (error) {
@@ -412,14 +412,14 @@ export const AdminDashboard = () => {
             <div className="mb-6">
               <input
                 type="file"
-                id="image-upload"
+                id="imgVdo-upload"
                 multiple
-                accept="image/*"
-                onChange={handleUploadImages}
+                accept="image/*,video/*"
+                onChange={handleUploadImgVdos}
                 className="hidden"
               />
               <label
-                htmlFor="image-upload"
+                htmlFor="imgVdo-upload"
                 className={`inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition cursor-pointer ${
                   uploading ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
@@ -430,10 +430,10 @@ export const AdminDashboard = () => {
 
             <div>
               <h3 className="text-lg font-semibold mb-4">
-                Imagens ({selectedCampaign.images?.length || 0})
+                Imagens ({selectedCampaign.imgVdos?.length || 0})
               </h3>
               
-              {!selectedCampaign.images || selectedCampaign.images.length === 0 ? (
+              {!selectedCampaign.imgVdos || selectedCampaign.imgVdos.length === 0 ? (
                 <div className="text-center py-12 bg-white rounded-lg border border-gray-200 border-dashed">
                   <p className="text-gray-500">Nenhuma imagem ainda.</p>
                   <p className="text-sm text-gray-400 mt-1">Adicione imagens para esta campanha</p>
@@ -442,17 +442,17 @@ export const AdminDashboard = () => {
                 <DndContext
                   sensors={sensors}
                   collisionDetection={closestCenter}
-                  onDragEnd={handleDragEndImages}
+                  onDragEnd={handleDragEndImgVdos}
                 >
-                  <SortableContext items={selectedCampaign.images.map(img => img.id)} strategy={rectSortingStrategy}>
+                  <SortableContext items={selectedCampaign.imgVdos.map(img => img.id)} strategy={rectSortingStrategy}>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {selectedCampaign.images.map((image) => (
-                        <SortableImage
-                          key={image.id}
-                          image={image}
-                          isThumb={selectedCampaign.thumbnailId === image.id}
+                      {selectedCampaign.imgVdos.map((imgVdo) => (
+                        <SortableImgVdo
+                          key={imgVdo.id}
+                          imgVdo={imgVdo}
+                          isThumb={selectedCampaign.thumbnailId === imgVdo.id}
                           onSetThumb={handleSetThumbnail}
-                          onDelete={handleDeleteImage}
+                          onDelete={handleDeleteImgVdo}
                           backendUrl={BACKEND_URL}
                         />
                       ))}

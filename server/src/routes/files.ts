@@ -9,8 +9,8 @@ import path from 'path';
 const router = Router()
 const prisma = new PrismaClient()
 
-//POST /api/campaigns/:campagingId/images upload image
-router.post('/campaign/:campaignId', authMiddleware, upload.array('images', 10), async (req: Request, res: Response) => {
+//POST /api/campaigns/:campagingId/imgsVdos upload imgVdo
+router.post('/campaign/:campaignId', authMiddleware, upload.array('imgVdos', 10), async (req: Request, res: Response) => {
   try {
 
     const campaignId = req.params.campaignId
@@ -34,16 +34,16 @@ router.post('/campaign/:campaignId', authMiddleware, upload.array('images', 10),
       return res.status(404).json({ error: 'Campaign not found' });
     }
 
-    const lastImage = await prisma.image.findFirst({
+    const lastImgVdo = await prisma.imgVdo.findFirst({
       where: { campaignId },
       orderBy: { order: 'desc' }
     })
 
-    let currentOrder = lastImage ? lastImage.order + 1 : 0
+    let currentOrder = lastImgVdo ? lastImgVdo.order + 1 : 0
 
-    //create database records for each image
-    const imagePromises = files.map(async (file) => {
-      const image = await prisma.image.create({
+    //create database records for each imgVdo
+    const imgVdoPromises = files.map(async (file) => {
+      const imgVdo = await prisma.imgVdo.create({
         data: {
           filename: file.filename,
           path: `/uploads/${file.filename}`,
@@ -51,69 +51,69 @@ router.post('/campaign/:campaignId', authMiddleware, upload.array('images', 10),
           order: currentOrder++
         }
       })
-      return image
+      return imgVdo
     })
 
-    const images = await Promise.all(imagePromises);
+    const imgsVdos = await Promise.all(imgVdoPromises);
 
     
     return res.status(201).json({
-      message: `${images.length} imagem(ns) enviada(s) com sucesso`,
-      images   
+      message: `${imgsVdos.length} imgVdom(ns) enviada(s) com sucesso`,
+      imgsVdos   
     })
 
     
   } catch (error) {
-    console.error('Error when uploading images:', error);
-    return res.status(500).json({ error: 'Error when uploading images' });
+    console.error('Error when uploading imgsVdos:', error);
+    return res.status(500).json({ error: 'Error when uploading imgsVdos' });
   }
 })
 
-//DELETE /api/images/:id delete images
+//DELETE /api/imgsVdos/:id delete imgsVdos
 router.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
   try {
     
     const id = req.params.id
 
     if(!id) {
-      return res.status(400).json({ error: 'image ID is required' });
+      return res.status(400).json({ error: 'imgVdo ID is required' });
     }
 
-    const image = await prisma.image.findUnique({
+    const imgVdo = await prisma.imgVdo.findUnique({
       where: { id },
       include: {campaign: true}
     })
 
-    if(!image) {
-      return res.status(404).json({ error: 'Image not found' });
+    if(!imgVdo) {
+      return res.status(404).json({ error: 'imgVdo not found' });
     }
 
-    //if image is thumb remove reference
-    if (image.campaign.thumbnailId === id) {
+    //if imgVdo is thumb remove reference
+    if (imgVdo.campaign.thumbnailId === id) {
       await prisma.campaign.update({
-        where: { id: image.campaignId },
+        where: { id: imgVdo.campaignId },
         data: { thumbnailId: null }
       });
     }
 
-    //delete image from disk
-    const filePath = path.join(process.cwd(),'uploads', image.filename)
+    //delete imgVdo from disk
+    const filePath = path.join(process.cwd(),'uploads', imgVdo.filename)
     if(fs.existsSync(filePath)) {
       fs.unlinkSync(filePath)
     }
 
-    //delete image from database
-    await prisma.image.delete({
+    //delete imgVdo from database
+    await prisma.imgVdo.delete({
       where: { id }
     })
 
-    return res.json({message: 'Image deleted successfully'})
+    return res.json({message: 'imgVdo deleted successfully'})
   } catch (error) {
-    console.error('Error when deleting image:', error);
-    return res.status(500).json({ error: 'Error when deleting image' });
+    console.error('Error when deleting imgVdo:', error);
+    return res.status(500).json({ error: 'Error when deleting imgVdo' });
   }
 })
-    //PUT /api/images/:id update images order
+    //PUT /api/imgsVdos/:id update imgsVdos order
     router.put('/:id/order', authMiddleware, async (req: Request, res: Response) => {
       
       try {
@@ -121,23 +121,23 @@ router.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
         const { order } = req.body
 
         if(!id) {
-          return res.status(400).json({ error: 'image ID is required' });
+          return res.status(400).json({ error: 'imgVdo ID is required' });
         }
 
         if(order === undefined) {
           return res.status(400).json({ error: 'order is required' });
         }
 
-        const image = await prisma.image.update({
+        const imgVdo = await prisma.imgVdo.update({
           where: { id },
           data: { order }
         })
 
-        return res.json(image);
+        return res.json(imgVdo);
 
       } catch (error) {
-        console.error('error when updating image');
-        return res.status(500).json({ error: 'error when updating image' });
+        console.error('error when updating imgVdo');
+        return res.status(500).json({ error: 'error when updating imgVdo' });
         
       }
     })

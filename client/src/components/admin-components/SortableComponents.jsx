@@ -53,7 +53,7 @@ export const SortableCampaign = ({ campaign, onSelect, backendUrl }) => {
           <div className="p-4">
             <h3 className="font-medium text-gray-900 mb-1">{campaign.title}</h3>
             <p className="text-sm text-gray-500">
-              {campaign.images?.length || 0} {campaign.images?.length === 1 ? 'imagem' : 'imagens'}
+              {campaign.imgVdos?.length || 0} {campaign.imgVdos?.length === 1 ? 'imagem' : 'imagens'}
             </p>
           </div>
         </div>
@@ -62,8 +62,8 @@ export const SortableCampaign = ({ campaign, onSelect, backendUrl }) => {
   );
 };
 
-// Componente de Imagem Sortable
-export const SortableImage = ({ image, isThumb, onSetThumb, onDelete, backendUrl }) => {
+// Componente de ImgVdo Sortable
+export const SortableImgVdo = ({ imgVdo, isThumb, onSetThumb, onDelete, backendUrl }) => {
   const {
     attributes,
     listeners,
@@ -71,13 +71,17 @@ export const SortableImage = ({ image, isThumb, onSetThumb, onDelete, backendUrl
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: image.id });
+  } = useSortable({ id: imgVdo.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
   };
+
+  // Verificar se é vídeo
+  const ext = imgVdo.filename.split('.').pop().toLowerCase();
+  const isVideo = ['mp4', 'webm', 'ogg', 'mov', 'mkv', 'avi'].includes(ext);
 
   return (
     <div 
@@ -97,12 +101,21 @@ export const SortableImage = ({ image, isThumb, onSetThumb, onDelete, backendUrl
         </svg>
       </button>
 
-      {/* Imagem */}
-      <img
-        src={`${backendUrl}${image.path}`}
-        alt={image.filename}
-        className="w-full h-full object-cover"
-      />
+      {/* Imagem ou Vídeo */}
+      {isVideo ? (
+        <video
+          src={`${backendUrl}${imgVdo.path}`}
+          className="w-full h-full object-cover"
+          muted
+          playsInline
+        />
+      ) : (
+        <img
+          src={`${backendUrl}${imgVdo.path}`}
+          alt={imgVdo.filename}
+          className="w-full h-full object-cover"
+        />
+      )}
 
       {/* Badge de Capa */}
       {isThumb && (
@@ -116,7 +129,7 @@ export const SortableImage = ({ image, isThumb, onSetThumb, onDelete, backendUrl
         <button
           onClick={(e) => {
             e.stopPropagation();
-            onSetThumb(image.id);
+            onSetThumb(imgVdo.id);
           }}
           className="flex-1 px-3 py-2 bg-white text-gray-900 text-sm rounded hover:bg-gray-100 font-medium"
         >
@@ -125,7 +138,7 @@ export const SortableImage = ({ image, isThumb, onSetThumb, onDelete, backendUrl
         <button
           onClick={(e) => {
             e.stopPropagation();
-            onDelete(image.id);
+            onDelete(imgVdo.id);
           }}
           className="px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 font-medium"
         >

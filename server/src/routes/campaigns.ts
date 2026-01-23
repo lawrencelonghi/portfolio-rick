@@ -1,4 +1,3 @@
-
 import type {Request, Response} from 'express';
 import { Router } from 'express'
 import { PrismaClient } from '@prisma/client';
@@ -14,7 +13,7 @@ router.get('/', async (req: Request, res: Response) => {
       orderBy: {order: 'asc'},
       include: {
         thumbnail: true,
-        images: {
+        imgVdos: {
           orderBy: {order: 'asc'}
         }
       }
@@ -41,7 +40,7 @@ router.get('/:id', async (req: Request, res: Response) => {
       where: { id },
       include: {
         thumbnail: true,
-        images: {
+        imgVdos: {
           orderBy: {order: 'asc'}
         }
       }
@@ -141,28 +140,28 @@ router.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
   }
 })
 
-//PUT /api/campaigns/:id/image define thumb image
+//PUT /api/campaigns/:id/thumbnail define thumb image
 router.put('/:id/thumbnail', authMiddleware, async (req: Request, res: Response) => {
   try {
     const {id} = req.params
-    const { imageId } = req.body
+    const { imgVdoId } = req.body
 
-    if(!imageId) {
-      return res.status(400).json({ error: 'Image id is required' });
+    if(!imgVdoId) {
+      return res.status(400).json({ error: 'ImgVdo id is required' });
     }
 
-    const image = await prisma.image.findUnique({
-      where: { id: imageId }
+    const imgVdo = await prisma.imgVdo.findUnique({
+      where: { id: imgVdoId }
     })
 
-    if(!image || image.campaignId !== id) {
-      return res.status(404).json({ error: 'Image not found' });
+    if(!imgVdo || imgVdo.campaignId !== id) {
+      return res.status(404).json({ error: 'ImgVdo not found' });
     }
 
     const campaign = await prisma.campaign.update({
       where: { id },
       data: {
-        thumbnailId: imageId
+        thumbnailId: imgVdoId
       }
     })
 

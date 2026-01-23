@@ -24,23 +24,23 @@ export const Work = () => {
       .catch(console.error);
   }, []);
 
-  const formatImagesForLightbox = (images) => {
-    return images.map((image) => {
-      const url = `${BACKEND_URL}${image.path}`;
-      const ext = image.filename.split(".").pop().toLowerCase();
+  const formatImgVdosForLightbox = (imgVdos) => {
+    return imgVdos.map((imgVdo) => {
+      const url = `${BACKEND_URL}${imgVdo.path}`;
+      const ext = imgVdo.filename.split(".").pop().toLowerCase();
 
-      // Suporte para vídeos (caso você adicione no futuro)
-      if (["mp4", "webm", "ogg"].includes(ext)) {
+      // Suporte para vídeos
+      if (["mp4", "webm", "ogg", "mov"].includes(ext)) {
         return {
           type: "video",
-          title: image.filename || "Untitled",
-          sources: [{ src: url, type: `video/${ext}` }],
+          title: imgVdo.filename || "Untitled",
+          sources: [{ src: url, type: `video/${ext === 'mov' ? 'mp4' : ext}` }],
         };
       } else {
         return {
           type: "image",
           src: url,
-          title: image.filename || "Untitled",
+          title: imgVdo.filename || "Untitled",
         };
       }
     });
@@ -56,13 +56,14 @@ export const Work = () => {
 
     const url = `${BACKEND_URL}${campaign.thumbnail.path}`;
     const ext = campaign.thumbnail.filename.split(".").pop().toLowerCase();
-    const isVideo = ["mp4", "webm", "ogg"].includes(ext);
+    const isVideo = ["mp4", "webm", "ogg", "mov"].includes(ext);
 
     return isVideo ? (
       <video
         src={url}
         className="cursor-pointer object-cover w-full h-auto"
         muted
+        playsInline
       />
     ) : (
       <img
@@ -89,8 +90,8 @@ export const Work = () => {
               <div className="text-center">
                 <span className="font-medium block">{campaign.title}</span>
                 <span className="text-sm opacity-75">
-                  {campaign.images?.length || 0}{" "}
-                  {campaign.images?.length === 1 ? "foto" : "fotos"}
+                  {campaign.imgVdos?.length || 0}{" "}
+                  {campaign.imgVdos?.length === 1 ? "item" : "itens"}
                 </span>
               </div>
             </div>
@@ -106,7 +107,7 @@ export const Work = () => {
             setOpen(false);
             setSelectedCampaign(null);
           }}
-          slides={formatImagesForLightbox(selectedCampaign.images || [])}
+          slides={formatImgVdosForLightbox(selectedCampaign.imgVdos || [])}
           index={0}
           thumbnails={{
             width: 80,

@@ -4,7 +4,7 @@ import path from "path";
 import cors from "cors"
 import authRoutes from './routes/auth.js'
 import campaignRoutes from './routes/campaigns.js';
-import imageRoutes from './routes/images.js';
+import filesRoute from './routes/files.js';
 import profileImageRoute from './routes/profile-image.js';
 
 
@@ -30,13 +30,13 @@ app.use(cors({
 }));
 
 //test route
-app.get('/api/health', (req, res) => {
+app.get('/api/health', (req,res) => {
   res.json({ status: 'ok', message: 'Server is running' })
 })
 
 app.use('/api/auth', authRoutes)
 app.use('/api/campaigns', campaignRoutes)
-app.use('/api/images', imageRoutes);
+app.use('/api/imgVdos', filesRoute);
 app.use('/api/profile-image', profileImageRoute);
 
 
