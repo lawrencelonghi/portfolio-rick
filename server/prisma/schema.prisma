@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id       String @id @default(uuid())
+  username String @unique
+  password String
+}
+
+model Campaign {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  thumbnailId String?  @unique
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  
+  imgVdos    ImgVdo[]
+  thumbnail  ImgVdo?  @relation("CampaignThumbnail", fields: [thumbnailId], references: [id], onDelete: SetNull)
+}
+
+model ImgVdo {
+  id         String   @id @default(uuid())
+  filename   String
+  path       String
+  order      Int      @default(0)
+  campaignId String
+  
+  campaign          Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  thumbnailCampaign Campaign? @relation("CampaignThumbnail")
+  
+  @@index([campaignId])
+}
+
+model ProfileImage {
+  id       String  @id @default(uuid())
+  filename String
+  path     String
+
+}
+
+model ProfileText {
+  id        String   @id @default(uuid())
+  textPt    String   
+  textEn    String   
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
