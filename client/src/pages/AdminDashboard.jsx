@@ -162,7 +162,7 @@ export const AdminDashboard = () => {
       loadCampaigns();
     } catch (error) {
       console.error('Erro ao fazer upload:', error);
-      alert('Erro ao fazer upload das imagens');
+      alert('Erro ao fazer upload dos arquivos');
     } finally {
       setUploading(false);
       e.target.value = '';
@@ -221,7 +221,7 @@ const handleUpdateProfileText = async (language) => {
   };
 
   const handleDeleteImgVdo = async (imgVdoId) => {
-    if (!confirm('Tem certeza que deseja deletar esta imagem?')) {
+    if (!confirm('Tem certeza que deseja deletar este arquivo?')) {
       return;
     }
 
@@ -236,8 +236,8 @@ const handleUpdateProfileText = async (language) => {
       });
       loadCampaigns();
     } catch (error) {
-      console.error('Erro ao deletar imagem:', error);
-      alert('Erro ao deletar imagem');
+      console.error('Erro ao deletar arquivo:', error);
+      alert('Erro ao deletar arquivo');
     }
   };
 
@@ -404,16 +404,13 @@ const handleUpdateProfileText = async (language) => {
          <div>
   <div className='mt-6 md:mt-8'>
     <h2 className="text-xl font-semibold text-gray-900">Textos do perfil</h2>
-    <p className="text-sm text-gray-500 mt-1">
-      Dica: Pressione Enter para criar parágrafos separados
-    </p>
   </div>
 
   <div className='mt-6 md:mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6'>
     {/* Texto em Português */}
     <div className='flex flex-col gap-4'>
       <label htmlFor="profile-pt-text" className="font-medium">
-        Texto em português
+        Texto em português:
       </label>
       <textarea
         id="profile-pt-text"
@@ -438,7 +435,7 @@ const handleUpdateProfileText = async (language) => {
     {/* Texto em Inglês */}
     <div className='flex flex-col gap-4'>
       <label htmlFor="profile-en-text" className="font-medium">
-        Texto em inglês
+        Texto em inglês:
       </label>
       <textarea
         id="profile-en-text"
@@ -517,19 +514,19 @@ const handleUpdateProfileText = async (language) => {
                   uploading ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
-                {uploading ? 'Enviando...' : '+ Adicionar Imagens'}
+                {uploading ? 'Enviando...' : '+ Adicionar imagem ou vídeo'}
               </label>
             </div>
 
             <div>
               <h3 className="text-lg font-semibold mb-4">
-                Imagens ({selectedCampaign.imgVdos?.length || 0})
+                Arquivos ({selectedCampaign.imgVdos?.length || 0})
               </h3>
               
               {!selectedCampaign.imgVdos || selectedCampaign.imgVdos.length === 0 ? (
                 <div className="text-center py-12 bg-white rounded-lg border border-gray-200 border-dashed">
-                  <p className="text-gray-500">Nenhuma imagem ainda.</p>
-                  <p className="text-sm text-gray-400 mt-1">Adicione imagens para esta campanha</p>
+                  <p className="text-gray-500">Nenhuma imagem ou vídeo ainda.</p>
+                  <p className="text-sm text-gray-400 mt-1">Adicione arquivos para esta campanha</p>
                 </div>
               ) : (
                 <DndContext

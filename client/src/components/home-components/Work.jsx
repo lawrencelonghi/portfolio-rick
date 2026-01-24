@@ -109,6 +109,11 @@ export const Work = () => {
           }}
           slides={formatImgVdosForLightbox(selectedCampaign.imgVdos || [])}
           index={0}
+          video={{
+            autoPlay: true,
+            controls: true,
+            playsInline: true,
+          }}
           thumbnails={{
             width: 80,
             height: 80,
