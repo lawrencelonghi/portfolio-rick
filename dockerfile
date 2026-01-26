@@ -1,5 +1,5 @@
 # Stage 1: Build do Frontend
-FROM node:18-alpine AS frontend-builder
+FROM node:20-alpine AS frontend-builder
 
 WORKDIR /app/client
 
@@ -16,7 +16,7 @@ COPY client/ ./
 RUN npm run build
 
 # Stage 2: Build do Backend
-FROM node:18-alpine AS backend-builder
+FROM node:20-alpine AS backend-builder
 
 WORKDIR /app/server
 
@@ -36,11 +36,15 @@ RUN npx prisma generate
 # Build do backend
 RUN npm run build
 
+RUN echo "Build completed, checking output:" && \
+    ls -la && \
+    ls -la dist/ 2>&1 || echo "WARNING: dist folder not found - build may have failed"
+
 # Verificar se o build foi criado
 RUN ls -la && echo "Checking dist folder:" && ls -la dist/ || echo "dist folder not found!"
 
 # Stage 3: Imagem final de produção
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
