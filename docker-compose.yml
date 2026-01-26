@@ -6,12 +6,8 @@ services:
       dockerfile: Dockerfile
     container_name: rick-backend
     restart: unless-stopped
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=file:/app/data/production.db
-      - JWT_SECRET=${JWT_SECRET}
-      - PORT=3000
-      - CLIENT_URL=https://ricktadeu.com.br
+    env_file:
+     - .env
     volumes:
       - ./data:/app/data
       - ./uploads:/app/uploads
