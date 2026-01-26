@@ -11,40 +11,44 @@ import profileTextsRoute from './routes/profile-texts.js';
 dotenv.config()
 
 const __dirname = path.resolve();
-const PORT = process.env.PORT || 3000
+const PORT = parseInt(process.env.PORT || '3000', 10)
 
 const app = express()
 
-// Middleware
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+// CORS configurado para aceitar requisições do frontend
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:5173",
-  credentials: true
+  origin: [
+    process.env.CLIENT_URL || "http://localhost:5173",
+    "https://ricktadeu.com.br",
+    "http://localhost:5173"
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Serve uploaded files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
+// Middlewares
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
-// API Routes (must come BEFORE static file serving)
+// Servir arquivos estáticos (uploads)
+app.use('/uploads', express.static('uploads'))
+
+// Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' })
 })
 
+// Rotas da API
 app.use('/api/auth', authRoutes)
 app.use('/api/campaigns', campaignRoutes)
 app.use('/api/imgVdos', filesRoute);
 app.use('/api/profile-image', profileImageRoute);
 app.use('/api/profile-texts', profileTextsRoute);
 
-// Serve static files from React build
-app.use(express.static(path.join(__dirname, "client/dist")))
-
-// SPA fallback - serve index.html for all non-API routes
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, "client/dist", "index.html"))
-})
-
-app.listen(PORT, () => {
+// Iniciar servidor
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV}`);
+  console.log(`Client URL: ${process.env.CLIENT_URL}`);
 })
