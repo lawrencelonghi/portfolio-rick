@@ -30,7 +30,7 @@ async function deleteAdmin() {
     }
 
     console.log('\n=== Admins Cadastrados ===\n');
-    admins.forEach((admin, index) => {
+    admins.forEach((admin: any, index: number) => {
       console.log(`${index + 1}. ${admin.username}`);
     });
     console.log('');
