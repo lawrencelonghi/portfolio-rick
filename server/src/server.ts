@@ -17,10 +17,9 @@ const PORT = process.env.PORT
 
 const app = express()
 
-//middlewares below
 
 //serve frontend static files
-app.use(express.static(path.join(__dirname, "../client/dist")))
+
 //serve static images files
 app.use('/uploads', express.static('uploads'))
 app.use(express.json())
@@ -41,6 +40,7 @@ app.use('/api/imgVdos', filesRoute);
 app.use('/api/profile-image', profileImageRoute);
 app.use('/api/profile-texts', profileTextsRoute);
 
+app.use(express.static(path.join(__dirname, "../client/dist")))
 
 app.listen(PORT, () => {
   console.log(`Server is running on localhost:${PORT}`);

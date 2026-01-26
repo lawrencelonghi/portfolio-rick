@@ -1,0 +1,27 @@
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rick-portfolio
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/data/production.db
+      - JWT_SECRET=${JWT_SECRET}
+      - PORT=3000
+      - CLIENT_URL=https://ricktadeu.com.br
+    volumes:
+      # Persistir banco de dados
+      - ./data:/app/data
+      # Persistir uploads
+      - ./uploads:/app/uploads
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
