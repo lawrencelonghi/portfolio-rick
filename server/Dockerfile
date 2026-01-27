@@ -40,3 +40,5 @@ RUN npx prisma generate
 
 # Copiar build do stage anterior
 COPY --from=builder /app/dist ./dist
+
+CMD ["npm", "run", "start"]
