@@ -3,8 +3,11 @@ import axios from 'axios';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
 export const api = axios.create({
-  baseURL: BACKEND_URL,
+  baseURL: import.meta.env.PROD
+    ? '/api'
+    : import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000/api',
 });
+
 
 // Interceptor para adicionar token em todas as requisições
 api.interceptors.request.use((config) => {
