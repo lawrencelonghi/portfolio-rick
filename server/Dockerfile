@@ -2,21 +2,27 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-
-RUN apk add --no-cache openssl1.1-compat
-
-# Dependências
+# Copiar arquivos de dependências
 COPY package*.json ./
 COPY prisma ./prisma/
 
-RUN npm install
+# Instalar dependências
+RUN npm ci
+
+# Gerar Prisma Client
 RUN npx prisma generate
 
-# Código
+# Copiar código fonte
 COPY . .
 
-# Build TS
+# Build TypeScript
 RUN npm run build
 
+# Criar diretório para uploads
+RUN mkdir -p uploads
+
+# Expor porta
 EXPOSE 3000
-CMD ["npm", "run", "start"]
+
+# Comando para iniciar
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]

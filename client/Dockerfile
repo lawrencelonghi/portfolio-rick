@@ -1,4 +1,4 @@
-# Frontend Dockerfile
+# Estágio de build
 FROM node:20-alpine AS builder
 
 WORKDIR /app
@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instalar dependências
-RUN npm install
+RUN npm ci
 
 # Copiar código fonte
 COPY . .
@@ -15,19 +15,19 @@ COPY . .
 # Build da aplicação
 RUN npm run build
 
-# Stage de produção - servidor estático simples
+# Estágio de produção com servidor simples
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Instalar servidor estático
+# Instalar serve para servir arquivos estáticos
 RUN npm install -g serve
 
-# Copiar build do stage anterior
+# Copiar build do estágio anterior
 COPY --from=builder /app/dist ./dist
 
 # Expor porta
-EXPOSE 5173
+EXPOSE 3001
 
-# Comando para servir a aplicação
-CMD ["serve", "-s", "dist", "-l", "5173"]
+# Comando para iniciar o servidor
+CMD ["serve", "-s", "dist", "-l", "3001"]

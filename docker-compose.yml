@@ -9,14 +9,12 @@ services:
     env_file:
       - ./server/.env.production
     volumes:
-      - ./data:/app/data
-      - ./uploads:/app/uploads
+      - backend-data:/app/data
+      - backend-uploads:/app/uploads
     networks:
       - app-network
-    expose:
-      - "3000"
 
-  # Frontend React
+  # Frontend
   frontend:
     build:
       context: ./client
@@ -27,23 +25,22 @@ services:
       - backend
     networks:
       - app-network
-    expose:
-      - "5173"
-    environment:
-      - VITE_BACKEND_URL=https://ricktadeu.com.br
 
-  # HTTPS Portal - Gerenciamento automático de SSL
+  # HTTPS Portal
   https-portal:
     image: steveltn/https-portal:1
     container_name: rick-https-portal
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     environment:
-      DOMAINS: 'ricktadeu.com.br -> http://frontend:5173'
-      STAGE: 'production'  # Use 'local' para desenvolvimento, 'staging' para teste, 'production' para produção
-      # FORCE_RENEW: 'true'  # Descomente para forçar renovação de certificados
+      DOMAINS: |
+        ricktadeu.com.br -> http://frontend:3001
+        ricktadeu.com.br/api -> http://backend:3000
+        ricktadeu.com.br/uploads -> http://backend:3000
+      STAGE: 'production'  # Use 'local' para testes, 'staging' para Let's Encrypt staging, 'production' para certificado real
+      # FORCE_RENEW: 'true'  # Descomente se precisar forçar renovação do certificado
     volumes:
       - https-portal-data:/var/lib/https-portal
     networks:
@@ -52,10 +49,14 @@ services:
       - frontend
       - backend
 
+volumes:
+  backend-data:
+    driver: local
+  backend-uploads:
+    driver: local
+  https-portal-data:
+    driver: local
+
 networks:
   app-network:
     driver: bridge
-
-volumes:
-  https-portal-data:
-    driver: local
