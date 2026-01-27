@@ -3,9 +3,9 @@ import axios from 'axios';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
 export const api = axios.create({
-  baseURL: import.meta.env.PROD
-    ? '/api'
-    : import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000/api',
+  baseURL: import.meta.env.DEV
+    ? 'http://localhost:3000/api'
+    : 'https://api.ricktadeu.com.br/api',
 });
 
 
