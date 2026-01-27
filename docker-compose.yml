@@ -1,29 +1,16 @@
 services:
   backend:
-    build: ./server
-    container_name: rick-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rick-app
     restart: unless-stopped
     env_file:
       - ./server/.env.production
-    ports:
-      - "3000"
     volumes:
-      - backend-data:/app/data
       - backend-uploads:/app/uploads
-    networks:
-      - app-network
-
-  https-portal:
-    image: steveltn/https-portal:1
     ports:
-      - "80:80"
-      - "443:443"
-    environment:
-      DOMAINS: ricktadeu.com.br -> http://backend:3000
-      STAGE: production
-    volumes:
-      - https-portal-data:/var/lib/https-portal
-    networks:
-      - app-network
-    depends_on:
-      - backend
+      - "3000:3000"
+
+volumes:
+  backend-uploads:
