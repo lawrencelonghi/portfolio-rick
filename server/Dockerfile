@@ -1,4 +1,4 @@
-# Frontend Dockerfile
+# Backend Dockerfile
 FROM node:20-alpine AS builder
 
 WORKDIR /app
@@ -6,30 +6,37 @@ WORKDIR /app
 # Copiar arquivos de dependências
 COPY package*.json ./
 
+# Copiar schema do Prisma
 COPY prisma ./prisma/
 
 # Instalar dependências
 RUN npm ci
 
+# Gerar o Prisma Client
+RUN npx prisma generate
+
 # Copiar código fonte
 COPY . .
 
-# Build da aplicação
+# Build da aplicação TypeScript
 RUN npm run build
 
-# Stage de produção - servidor estático simples
+# Stage de produção
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Instalar servidor estático
-RUN npm install -g serve
+# Copiar package.json para instalar apenas dependências de produção
+COPY package*.json ./
+
+# Copiar schema do Prisma
+COPY prisma ./prisma/
+
+# Instalar apenas dependências de produção
+RUN npm ci --only=production
+
+# Gerar o Prisma Client em produção
+RUN npx prisma generate
 
 # Copiar build do stage anterior
 COPY --from=builder /app/dist ./dist
-
-# Expor porta
-EXPOSE 5173
-
-# Comando para servir a aplicação
-CMD ["serve", "-s", "dist", "-l", "5173"]

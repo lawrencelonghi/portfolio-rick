@@ -7,7 +7,7 @@ services:
     container_name: rick-backend
     restart: unless-stopped
     env_file:
-     - .env
+      - ./server/.env.production
     volumes:
       - ./data:/app/data
       - ./uploads:/app/uploads
