@@ -10,7 +10,7 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 # Instalar dependências
-RUN npm ci
+RUN npm install
 
 # Gerar o Prisma Client
 RUN npx prisma generate
@@ -33,7 +33,7 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 # Instalar apenas dependências de produção
-RUN npm ci --only=production
+RUN npm install --only=production
 
 # Gerar o Prisma Client em produção
 RUN npx prisma generate
