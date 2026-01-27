@@ -35,10 +35,12 @@ COPY prisma ./prisma/
 # Instalar apenas dependências de produção
 RUN npm install --only=production
 
-# Gerar o Prisma Client em produção
-RUN npx prisma generate
+
 
 # Copiar build do stage anterior
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
-CMD ["npm", "run", "start"]
+EXPOSE 3000
+
+CMD ["node", "dist/server.js"]
