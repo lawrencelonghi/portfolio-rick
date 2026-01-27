@@ -1,16 +1,63 @@
 services:
+  # Backend API
   backend:
     build:
-      context: .
+      context: ./server
       dockerfile: Dockerfile
-    container_name: rick-app
+    container_name: rick-backend
     restart: unless-stopped
     env_file:
       - ./server/.env.production
     volumes:
+      - backend-data:/app/data
       - backend-uploads:/app/uploads
+    networks:
+      - app-network
+
+  # Frontend
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: rick-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  # HTTPS Portal
+  https-portal:
+    image: steveltn/https-portal:1
+    container_name: rick-https-portal
+    restart: unless-stopped
     ports:
-      - "3000:3000"
+      - '80:80'
+      - '443:443'
+    environment:
+      DOMAINS: |
+        ricktadeu.com.br -> http://frontend:3001
+        ricktadeu.com.br/api -> http://backend:3000
+        ricktadeu.com.br/uploads -> http://backend:3000
+      STAGE: 'production'  # Use 'local' para testes, 'staging' para Let's Encrypt staging, 'production' para certificado real
+      # FORCE_RENEW: 'true'  # Descomente se precisar forçar renovação do certificado
+    volumes:
+      - https-portal-data:/var/lib/https-portal
+    networks:
+      - app-network
+    depends_on:
+      - frontend
+      - backend
 
 volumes:
+  backend-data:
+    driver: local
   backend-uploads:
+    driver: local
+  https-portal-data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
+    
