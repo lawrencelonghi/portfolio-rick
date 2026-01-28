@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+// Backend agora está na mesma origem (via proxy nginx)
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '';
 
 export const api = axios.create({
   baseURL: BACKEND_URL,

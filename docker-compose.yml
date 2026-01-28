@@ -35,10 +35,7 @@ services:
       - '80:80'
       - '443:443'
     environment:
-      DOMAINS: |
-        ricktadeu.com.br -> http://frontend:3001
-        ricktadeu.com.br/api -> http://backend:3000
-        ricktadeu.com.br/uploads -> http://backend:3000
+      DOMAINS: 'ricktadeu.com.br -> http://frontend:3001'
       STAGE: 'production'  # Use 'local' para testes, 'staging' para Let's Encrypt staging, 'production' para certificado real
       # FORCE_RENEW: 'true'  # Descomente se precisar forçar renovação do certificado
     volumes:
