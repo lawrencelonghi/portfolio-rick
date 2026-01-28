@@ -50,7 +50,7 @@ app.use('/api/profile-texts', profileTextsRoute);
 app.use(express.static(path.join(__dirname, 'public')))
 
 // SPA fallback - todas as outras rotas retornam o index.html
-app.get('*', (req, res) => {
+app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'))
 })
 
