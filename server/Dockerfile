@@ -34,7 +34,13 @@ RUN npm install
 
 COPY client/ ./
 
-# Build do frontend React/Vite
+# IMPORTANTE: Garantir que .env.production existe
+# Se não existir no projeto, criar com valor padrão
+RUN if [ ! -f .env.production ]; then \
+      echo "VITE_BACKEND_URL=https://ricktadeu.com.br" > .env.production; \
+    fi
+
+# Build do frontend React/Vite (vai incluir as variáveis VITE_)
 RUN npm run build
 
 # Mover build do frontend para pasta public do backend
