@@ -49,9 +49,15 @@ app.use('/api/profile-texts', profileTextsRoute);
 // Servir frontend buildado (DEVE VIR DEPOIS DAS ROTAS DA API)
 app.use(express.static(path.join(__dirname, 'public')))
 
-// SPA fallback - todas as outras rotas retornam o index.html
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'))
+// SPA fallback - middleware ao invés de rota
+// Qualquer requisição que chegou até aqui e não é da API, retorna index.html
+app.use((req, res, next) => {
+  // Se a rota começa com /api, deixa passar (vai dar 404 da API)
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  // Caso contrário, serve o index.html do frontend
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 })
 
 // Iniciar servidor
