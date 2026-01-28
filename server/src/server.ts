@@ -46,6 +46,14 @@ app.use('/api/imgVdos', filesRoute);
 app.use('/api/profile-image', profileImageRoute);
 app.use('/api/profile-texts', profileTextsRoute);
 
+// Servir frontend buildado (DEVE VIR DEPOIS DAS ROTAS DA API)
+app.use(express.static(path.join(__dirname, 'public')))
+
+// SPA fallback - todas as outras rotas retornam o index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'))
+})
+
 // Iniciar servidor
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
