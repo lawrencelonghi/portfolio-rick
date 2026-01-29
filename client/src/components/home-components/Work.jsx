@@ -1,3 +1,4 @@
+// Work.jsx
 import React, { useState, useEffect } from "react";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
@@ -12,50 +13,84 @@ export const Work = () => {
   const [open, setOpen] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [campaigns, setCampaigns] = useState([]);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [thumbnailsLoaded, setThumbnailsLoaded] = useState(false);
+  const [allImagesPreloaded, setAllImagesPreloaded] = useState(false);
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
+  // Função helper para pré-carregar uma imagem
+  const preloadImage = (src) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(src);
+      img.onerror = () => reject(src);
+      img.src = src;
+    });
+  };
+
+  // Carrega os dados das campanhas
   useEffect(() => {
     fetch(`${BACKEND_URL}/api/campaigns`)
       .then((res) => res.json())
       .then((data) => {
         setCampaigns(data);
-
-          const imagePromises = data.map(campaign => {
-          if (!campaign.thumbnail) return Promise.resolve();
-          
-          return new Promise((resolve) => {
-            const img = new Image();
-            img.onload = resolve;
-            img.onerror = resolve;
-            img.src = `${BACKEND_URL}${campaign.thumbnail.path}`;
-          });
-        });
-        
-        Promise.all(imagePromises).then(() => {
-          setImagesLoaded(true);
-        });
-
-
       })
       .catch(console.error);
   }, []);
 
-    if (!imagesLoaded) {
-      return (
-        <section id="work" className="scroll-mt-28 mt-24 md:mt-40 m-5 p-2">
-          <div className="text-center py-12">Aguarde, estou carregando...</div>
-        </section>
-      );
-  }
+  // ETAPA 1: Pré-carrega apenas as thumbnails (capas das campanhas)
+  useEffect(() => {
+    if (campaigns.length === 0) return;
+
+    const thumbnailUrls = campaigns
+      .filter(campaign => campaign.thumbnail)
+      .map(campaign => `${BACKEND_URL}${campaign.thumbnail.path}`);
+
+    Promise.allSettled(thumbnailUrls.map(preloadImage))
+      .then(() => {
+        setThumbnailsLoaded(true);
+        console.log('✅ Thumbnails carregadas');
+      });
+  }, [campaigns, BACKEND_URL]);
+
+  // ETAPA 2: Pré-carrega TODAS as imagens das campanhas (em background)
+  useEffect(() => {
+    if (!thumbnailsLoaded || campaigns.length === 0) return;
+
+    const allImageUrls = campaigns.flatMap(campaign => 
+      (campaign.imgVdos || [])
+        .filter(imgVdo => {
+          const ext = imgVdo.filename.split(".").pop().toLowerCase();
+          // Só pré-carrega imagens, não vídeos (muito pesados)
+          return !["mp4", "webm", "ogg", "mov"].includes(ext);
+        })
+        .map(imgVdo => `${BACKEND_URL}${imgVdo.path}`)
+    );
+
+    // Carrega em lotes para não sobrecarregar
+    const batchSize = 5;
+    const loadBatch = async (urls, startIndex = 0) => {
+      if (startIndex >= urls.length) {
+        setAllImagesPreloaded(true);
+        console.log('✅ Todas as imagens carregadas');
+        return;
+      }
+
+      const batch = urls.slice(startIndex, startIndex + batchSize);
+      await Promise.allSettled(batch.map(preloadImage));
+      
+      // Aguarda um pouco antes do próximo lote
+      setTimeout(() => loadBatch(urls, startIndex + batchSize), 100);
+    };
+
+    loadBatch(allImageUrls);
+  }, [thumbnailsLoaded, campaigns, BACKEND_URL]);
 
   const formatImgVdosForLightbox = (imgVdos) => {
     return imgVdos.map((imgVdo) => {
       const url = `${BACKEND_URL}${imgVdo.path}`;
       const ext = imgVdo.filename.split(".").pop().toLowerCase();
 
-      // Suporte para vídeos
       if (["mp4", "webm", "ogg", "mov"].includes(ext)) {
         return {
           type: "video",
@@ -100,8 +135,23 @@ export const Work = () => {
     );
   };
 
+  // Loading state enquanto thumbnails carregam
+  if (!thumbnailsLoaded) {
+    return (
+      <section id="work" className="scroll-mt-28 mt-24 md:mt-40 m-5 p-2">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p className="text-gray-600">Carregando galeria...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="work" className="scroll-mt-28 mt-24 md:mt-40 m-5 p-2">
+
       <div className="bento gap-2">
         {campaigns.map((campaign) => (
           <div key={campaign.id} className="relative mb-2 group">
@@ -127,7 +177,7 @@ export const Work = () => {
 
       {selectedCampaign && (
         <Lightbox
-          plugins={[Zoom,Video, Thumbnails]}
+          plugins={[Zoom, Video, Thumbnails]}
           open={open}
           close={() => {
             setOpen(false);
