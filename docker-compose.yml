@@ -25,6 +25,10 @@ services:
     environment:
       DOMAINS: 'ricktadeu.com.br -> http://backend:3000'
       STAGE: 'production'
+      CLIENT_MAX_BODY_SIZE: '100M'  
+      PROXY_CONNECT_TIMEOUT: '600'  
+      PROXY_SEND_TIMEOUT: '600'     
+      PROXY_READ_TIMEOUT: '600'     
     volumes:
       - https-portal-data:/var/lib/https-portal
     networks:

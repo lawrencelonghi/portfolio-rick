@@ -18,7 +18,7 @@ export const Work = () => {
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
-  // Função helper para pré-carregar uma imagem
+  // pre-carrega imagem
   const preloadImage = (src) => {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -28,7 +28,6 @@ export const Work = () => {
     });
   };
 
-  // Carrega os dados das campanhas
   useEffect(() => {
     fetch(`${BACKEND_URL}/api/campaigns`)
       .then((res) => res.json())
@@ -38,7 +37,6 @@ export const Work = () => {
       .catch(console.error);
   }, []);
 
-  // ETAPA 1: Pré-carrega apenas as thumbnails (capas das campanhas)
   useEffect(() => {
     if (campaigns.length === 0) return;
 
@@ -49,11 +47,9 @@ export const Work = () => {
     Promise.allSettled(thumbnailUrls.map(preloadImage))
       .then(() => {
         setThumbnailsLoaded(true);
-        console.log('✅ Thumbnails carregadas');
       });
   }, [campaigns, BACKEND_URL]);
 
-  // ETAPA 2: Pré-carrega TODAS as imagens das campanhas (em background)
   useEffect(() => {
     if (!thumbnailsLoaded || campaigns.length === 0) return;
 
@@ -61,25 +57,23 @@ export const Work = () => {
       (campaign.imgVdos || [])
         .filter(imgVdo => {
           const ext = imgVdo.filename.split(".").pop().toLowerCase();
-          // Só pré-carrega imagens, não vídeos (muito pesados)
           return !["mp4", "webm", "ogg", "mov"].includes(ext);
         })
         .map(imgVdo => `${BACKEND_URL}${imgVdo.path}`)
     );
 
-    // Carrega em lotes para não sobrecarregar
+    // carrega em partes para não sobrecarregar o navegador
     const batchSize = 5;
     const loadBatch = async (urls, startIndex = 0) => {
       if (startIndex >= urls.length) {
         setAllImagesPreloaded(true);
-        console.log('✅ Todas as imagens carregadas');
         return;
       }
 
       const batch = urls.slice(startIndex, startIndex + batchSize);
       await Promise.allSettled(batch.map(preloadImage));
       
-      // Aguarda um pouco antes do próximo lote
+      // aguarda um pouco antes de carregar a proxima parte (estava bugando)
       setTimeout(() => loadBatch(urls, startIndex + batchSize), 100);
     };
 
@@ -135,14 +129,13 @@ export const Work = () => {
     );
   };
 
-  // Loading state enquanto thumbnails carregam
   if (!thumbnailsLoaded) {
     return (
       <section id="work" className="scroll-mt-28 mt-24 md:mt-40 m-5 p-2">
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-            <p className="text-gray-600">Carregando galeria...</p>
+            <p className="text-gray-600">Carregando a galeria...</p>
           </div>
         </div>
       </section>

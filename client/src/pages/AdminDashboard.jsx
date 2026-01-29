@@ -70,7 +70,6 @@ export const AdminDashboard = () => {
     const fetchProfileText = async () => {
       try {
         const { data } = await api.get('/api/profile-texts');
-        console.log('Dados recebidos da API como texto do perfil:', data); // Debug
         setNewProfileText(data)
       } catch (error) {
         console.error('Erro ao buscar texto de perfil:', error);
