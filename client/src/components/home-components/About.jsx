@@ -65,7 +65,7 @@ export const About = () => {
           <img 
             src={`${BACKEND_URL}${profileImage.path}`} 
             alt="Ricardo Tadeu"
-            className="max-w-full h-auto"
+            className="max-w-full max-h-full"
           />
         ) : (
           <div className="w-64 h-64 bg-gray-200 flex items-center justify-center rounded">

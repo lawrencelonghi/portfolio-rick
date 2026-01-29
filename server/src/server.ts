@@ -8,7 +8,11 @@ import filesRoute from './routes/files.js';
 import profileImageRoute from './routes/profile-image.js';
 import profileTextsRoute from './routes/profile-texts.js';
 
-dotenv.config()
+const envFile = process.env.NODE_ENV === 'production' 
+  ? '.env.production' 
+  : '.env.development';
+
+dotenv.config({ path: envFile });
 
 const __dirname = path.resolve();
 const PORT = parseInt(process.env.PORT || '3000', 10)

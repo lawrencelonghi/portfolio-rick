@@ -12,6 +12,7 @@ export const Work = () => {
   const [open, setOpen] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [campaigns, setCampaigns] = useState([]);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
@@ -20,9 +21,34 @@ export const Work = () => {
       .then((res) => res.json())
       .then((data) => {
         setCampaigns(data);
+
+          const imagePromises = data.map(campaign => {
+          if (!campaign.thumbnail) return Promise.resolve();
+          
+          return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = resolve;
+            img.onerror = resolve;
+            img.src = `${BACKEND_URL}${campaign.thumbnail.path}`;
+          });
+        });
+        
+        Promise.all(imagePromises).then(() => {
+          setImagesLoaded(true);
+        });
+
+
       })
       .catch(console.error);
   }, []);
+
+    if (!imagesLoaded) {
+      return (
+        <section id="work" className="scroll-mt-28 mt-24 md:mt-40 m-5 p-2">
+          <div className="text-center py-12">Aguarde, estou carregando...</div>
+        </section>
+      );
+  }
 
   const formatImgVdosForLightbox = (imgVdos) => {
     return imgVdos.map((imgVdo) => {
@@ -101,7 +127,7 @@ export const Work = () => {
 
       {selectedCampaign && (
         <Lightbox
-          plugins={[Zoom, Captions, Video, Thumbnails]}
+          plugins={[Zoom,Video, Thumbnails]}
           open={open}
           close={() => {
             setOpen(false);
