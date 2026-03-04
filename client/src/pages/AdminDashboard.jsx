@@ -295,6 +295,15 @@ const handleUpdateProfileText = async (language) => {
     }
   };
 
+  const handleDragStart = () => {
+    document.body.style.overflow = 'hidden';
+  };
+
+  const handleDragEnd = (handler) => (event) => {
+    document.body.style.overflow = '';
+    handler(event);
+  };
+
   const handleSelectCampaign = (campaign) => {
     setSelectedCampaign(campaign);
   };
@@ -352,7 +361,8 @@ const handleUpdateProfileText = async (language) => {
               <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
-                onDragEnd={handleDragEndCampaigns}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd(handleDragEndCampaigns)}
               >
                 <SortableContext items={campaigns.map(c => c.id)} strategy={rectSortingStrategy}>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -538,7 +548,8 @@ const handleUpdateProfileText = async (language) => {
                 <DndContext
                   sensors={sensors}
                   collisionDetection={closestCenter}
-                  onDragEnd={handleDragEndImgVdos}
+                  onDragStart={handleDragStart}
+                  onDragEnd={handleDragEnd(handleDragEndImgVdos)}
                 >
                   <SortableContext items={selectedCampaign.imgVdos.map(img => img.id)} strategy={rectSortingStrategy}>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

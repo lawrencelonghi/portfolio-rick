@@ -124,14 +124,13 @@ export const SortableImgVdo = ({ imgVdo, isThumb, onSetThumb, onDelete, backendU
         </div>
       )}
 
-      {/* Botões de Ação - aparecem no hover */}
       <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/70 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex gap-2">
         <button
           onClick={(e) => {
             e.stopPropagation();
             onSetThumb(imgVdo.id);
           }}
-          className="flex-1 px-3 py-2 bg-white cursor-pointer text-gray-900 text-sm rounded hover:bg-gray-100 font-medium"
+          className="flex-1 px-2 py-1 md:px-3 md:py-2 bg-white cursor-pointer text-gray-900 text-xs md:text-sm rounded hover:bg-gray-100 font-medium"
         >
           {isThumb ? '★ Capa' : 'Definir Capa'}
         </button>
