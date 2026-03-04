@@ -25,7 +25,7 @@ export const SortableCampaign = ({ campaign, onSelect, backendUrl }) => {
         <button
           {...attributes}
           {...listeners}
-          className="absolute top-2 right-2 z-10 p-2 bg-white/90 hover:bg-white rounded shadow-sm cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute top-2 right-2 z-10 p-2 bg-white/90 hover:bg-white rounded shadow-sm cursor-grab active:cursor-grabbing opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
           aria-label="Arrastar campanha"
         >
           <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -93,7 +93,7 @@ export const SortableImgVdo = ({ imgVdo, isThumb, onSetThumb, onDelete, backendU
       <button
         {...attributes}
         {...listeners}
-        className="absolute top-2 right-2 z-10 p-2 bg-white/90 hover:bg-white rounded shadow-sm cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute top-2 right-2 z-10 p-2 bg-white/90 hover:bg-white rounded shadow-sm cursor-grab active:cursor-grabbing opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
         aria-label="Arrastar imagem"
       >
         <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -125,13 +125,13 @@ export const SortableImgVdo = ({ imgVdo, isThumb, onSetThumb, onDelete, backendU
       )}
 
       {/* Botões de Ação - aparecem no hover */}
-      <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+      <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/70 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex gap-2">
         <button
           onClick={(e) => {
             e.stopPropagation();
             onSetThumb(imgVdo.id);
           }}
-          className="flex-1 px-3 py-2 bg-white text-gray-900 text-sm rounded hover:bg-gray-100 font-medium"
+          className="flex-1 px-3 py-2 bg-white cursor-pointer text-gray-900 text-sm rounded hover:bg-gray-100 font-medium"
         >
           {isThumb ? '★ Capa' : 'Definir Capa'}
         </button>
@@ -140,7 +140,7 @@ export const SortableImgVdo = ({ imgVdo, isThumb, onSetThumb, onDelete, backendU
             e.stopPropagation();
             onDelete(imgVdo.id);
           }}
-          className="px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 font-medium"
+          className="px-3 py-2 cursor-pointer bg-red-600 text-white text-sm rounded hover:bg-red-700 font-medium"
         >
           Deletar
         </button>
