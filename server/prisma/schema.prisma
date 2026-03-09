@@ -28,6 +28,8 @@ model Campaign {
 model ImgVdo {
   id         String   @id @default(uuid())
   filename   String
+  width      Int?
+  height     Int?
   path       String
   order      Int      @default(0)
   campaignId String

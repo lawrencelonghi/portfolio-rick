@@ -24,8 +24,15 @@ a{
   cursor: pointer;
 }
 
-.bento{
+
+.bento {
   columns: 300px;
+  gap: 0.5rem;
+}
+
+.bento > div {
+  margin-bottom: 0.5rem;
+  break-inside: avoid;
 }
 
 .fade-in {

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "ImgVdo" ADD COLUMN "height" INTEGER;
+ALTER TABLE "ImgVdo" ADD COLUMN "width" INTEGER;

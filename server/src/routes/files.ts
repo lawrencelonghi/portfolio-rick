@@ -5,11 +5,30 @@ import { authMiddleware } from '../middleware/auth.js';
 import { upload } from '../middleware/upload.js';
 import fs from 'fs';
 import path from 'path';
+import sharp from 'sharp';
 
 const router = Router();
 const prisma = new PrismaClient();
 
-// POST /api/campaign/:campaignId
+const VIDEO_EXTENSIONS = ['mp4', 'mkv', 'avi', 'mov', 'webm', 'ogg'];
+
+// Retorna { width, height } para imagens, null para vídeos
+async function getImageDimensions(filePath: string, filename: string): Promise<{ width: number; height: number } | null> {
+  const ext = path.extname(filename).replace('.', '').toLowerCase();
+  if (VIDEO_EXTENSIONS.includes(ext)) return null;
+
+  try {
+    const metadata = await sharp(filePath).metadata();
+    if (metadata.width && metadata.height) {
+      return { width: metadata.width, height: metadata.height };
+    }
+  } catch (err) {
+    console.error('Error reading image dimensions:', err);
+  }
+  return null;
+}
+
+// POST /api/imgVdos/campaign/:campaignId
 router.post(
   '/campaign/:campaignId',
   authMiddleware,
@@ -44,16 +63,20 @@ router.post(
 
       let currentOrder = lastImgVdo ? lastImgVdo.order + 1 : 0;
 
-      const imgVdoPromises = files.map(file =>
-        prisma.imgVdo.create({
+      const imgVdoPromises = files.map(async (file) => {
+        const dimensions = await getImageDimensions(file.path, file.filename);
+
+        return prisma.imgVdo.create({
           data: {
             filename: file.filename,
             path: `/uploads/${file.filename}`,
             campaignId,
             order: currentOrder++,
+            width: dimensions?.width ?? null,
+            height: dimensions?.height ?? null,
           },
-        })
-      );
+        });
+      });
 
       const imgsVdos = await Promise.all(imgVdoPromises);
 
@@ -68,7 +91,7 @@ router.post(
   }
 );
 
-// DELETE /api/imgsVdos/:id
+// DELETE /api/imgVdos/:id
 router.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -109,7 +132,7 @@ router.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
   }
 });
 
-// PUT /api/imgsVdos/:id/order
+// PUT /api/imgVdos/:id/order
 router.put('/:id/order', authMiddleware, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
