@@ -4,81 +4,29 @@ import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import Video from "yet-another-react-lightbox/plugins/video";
-import Captions from "yet-another-react-lightbox/plugins/captions";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
-import "yet-another-react-lightbox/plugins/captions.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 
 export const Work = () => {
   const [open, setOpen] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [campaigns, setCampaigns] = useState([]);
-  const [thumbnailsLoaded, setThumbnailsLoaded] = useState(false);
-  const [allImagesPreloaded, setAllImagesPreloaded] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-
-  // pre-carrega imagem
-  const preloadImage = (src) => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve(src);
-      img.onerror = () => reject(src);
-      img.src = src;
-    });
-  };
 
   useEffect(() => {
     fetch(`${BACKEND_URL}/api/campaigns`)
       .then((res) => res.json())
       .then((data) => {
         setCampaigns(data);
+        setLoading(false);
       })
-      .catch(console.error);
-  }, []);
-
-  useEffect(() => {
-    if (campaigns.length === 0) return;
-
-    const thumbnailUrls = campaigns
-      .filter(campaign => campaign.thumbnail)
-      .map(campaign => `${BACKEND_URL}${campaign.thumbnail.path}`);
-
-    Promise.allSettled(thumbnailUrls.map(preloadImage))
-      .then(() => {
-        setThumbnailsLoaded(true);
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
       });
-  }, [campaigns, BACKEND_URL]);
-
-  useEffect(() => {
-    if (!thumbnailsLoaded || campaigns.length === 0) return;
-
-    const allImageUrls = campaigns.flatMap(campaign => 
-      (campaign.imgVdos || [])
-        .filter(imgVdo => {
-          const ext = imgVdo.filename.split(".").pop().toLowerCase();
-          return !["mp4", "webm", "ogg", "mov"].includes(ext);
-        })
-        .map(imgVdo => `${BACKEND_URL}${imgVdo.path}`)
-    );
-
-    // carrega em partes para não sobrecarregar o navegador
-    const batchSize = 5;
-    const loadBatch = async (urls, startIndex = 0) => {
-      if (startIndex >= urls.length) {
-        setAllImagesPreloaded(true);
-        return;
-      }
-
-      const batch = urls.slice(startIndex, startIndex + batchSize);
-      await Promise.allSettled(batch.map(preloadImage));
-      
-      // aguarda um pouco antes de carregar a proxima parte (estava bugando)
-      setTimeout(() => loadBatch(urls, startIndex + batchSize), 100);
-    };
-
-    loadBatch(allImageUrls);
-  }, [thumbnailsLoaded, campaigns, BACKEND_URL]);
+  }, []);
 
   const formatImgVdosForLightbox = (imgVdos) => {
     return imgVdos.map((imgVdo) => {
@@ -89,7 +37,7 @@ export const Work = () => {
         return {
           type: "video",
           title: imgVdo.filename || "Untitled",
-          sources: [{ src: url, type: `video/${ext === 'mov' ? 'mp4' : ext}` }],
+          sources: [{ src: url, type: `video/${ext === "mov" ? "mp4" : ext}` }],
         };
       } else {
         return {
@@ -125,11 +73,12 @@ export const Work = () => {
         src={url}
         alt={campaign.title}
         className="cursor-pointer object-cover w-full h-auto"
+        loading="lazy"
       />
     );
   };
 
-  if (!thumbnailsLoaded) {
+  if (loading) {
     return (
       <section id="work" className="scroll-mt-28 mt-24 md:mt-40 m-5 p-2">
         <div className="flex items-center justify-center min-h-[400px]">
@@ -144,7 +93,6 @@ export const Work = () => {
 
   return (
     <section id="work" className="scroll-mt-28 mt-24 md:mt-40 m-5 p-2">
-
       <div className="bento gap-2">
         {campaigns.map((campaign) => (
           <div key={campaign.id} className="relative mb-2 group">
@@ -197,6 +145,35 @@ export const Work = () => {
             button: { color: "#707070", filter: "none" },
             thumbnail: { border: "none" },
             thumbnailsContainer: { backgroundColor: "#fff" },
+          }}
+          render={{
+            iconPrev: () => null,
+            slideHeader: () => (
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  zIndex: 10,
+                  padding: "16px 60px",
+                  textAlign: "center",
+                  pointerEvents: "none",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "13px",
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                    color: "#555",
+                    fontWeight: 500,
+                  }}
+                >
+                  {selectedCampaign.title}
+                </span>
+              </div>
+            ),
           }}
         />
       )}
