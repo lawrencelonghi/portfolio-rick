@@ -12,20 +12,55 @@ const prisma = new PrismaClient();
 
 const VIDEO_EXTENSIONS = ['mp4', 'mkv', 'avi', 'mov', 'webm', 'ogg'];
 
-// Retorna { width, height } para imagens, null para vídeos
-async function getImageDimensions(filePath: string, filename: string): Promise<{ width: number; height: number } | null> {
-  const ext = path.extname(filename).replace('.', '').toLowerCase();
-  if (VIDEO_EXTENSIONS.includes(ext)) return null;
+interface ProcessedFile {
+  filename: string;
+  width: number | null;
+  height: number | null;
+}
+
+// Processa imagem: converte para WebP, redimensiona e retorna dimensões
+async function processImage(file: Express.Multer.File): Promise<ProcessedFile> {
+  const ext = path.extname(file.filename).replace('.', '').toLowerCase();
+
+  // Vídeos: não processa, só retorna
+  if (VIDEO_EXTENSIONS.includes(ext)) {
+    return { filename: file.filename, width: null, height: null };
+  }
+
+  // Imagens: converte para WebP
+  const baseName = path.basename(file.filename, path.extname(file.filename));
+  const webpFilename = baseName + '.webp';
+  const webpPath = path.join('uploads', webpFilename);
 
   try {
-    const metadata = await sharp(filePath).metadata();
-    if (metadata.width && metadata.height) {
-      return { width: metadata.width, height: metadata.height };
-    }
+    const metadata = await sharp(file.path)
+      .webp({ quality: 82 })
+      .resize({ width: 1920, withoutEnlargement: true })
+      .toFile(webpPath);
+
+    // Remove o arquivo original após conversão
+    fs.unlinkSync(file.path);
+
+    return {
+      filename: webpFilename,
+      width: metadata.width ?? null,
+      height: metadata.height ?? null,
+    };
   } catch (err) {
-    console.error('Error reading image dimensions:', err);
+    console.error('Erro ao converter imagem para WebP:', err);
+
+    // Fallback: se falhar, usa o arquivo original e tenta ler as dimensões
+    try {
+      const meta = await sharp(file.path).metadata();
+      return {
+        filename: file.filename,
+        width: meta.width ?? null,
+        height: meta.height ?? null,
+      };
+    } catch {
+      return { filename: file.filename, width: null, height: null };
+    }
   }
-  return null;
 }
 
 // POST /api/imgVdos/campaign/:campaignId
@@ -52,7 +87,9 @@ router.post(
       });
 
       if (!campaign) {
-        files.forEach(file => fs.unlinkSync(file.path));
+        files.forEach(file => {
+          if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+        });
         return res.status(404).json({ error: 'Campaign not found' });
       }
 
@@ -64,16 +101,16 @@ router.post(
       let currentOrder = lastImgVdo ? lastImgVdo.order + 1 : 0;
 
       const imgVdoPromises = files.map(async (file) => {
-        const dimensions = await getImageDimensions(file.path, file.filename);
+        const processed = await processImage(file);
 
         return prisma.imgVdo.create({
           data: {
-            filename: file.filename,
-            path: `/uploads/${file.filename}`,
+            filename: processed.filename,
+            path: `/uploads/${processed.filename}`,
             campaignId,
             order: currentOrder++,
-            width: dimensions?.width ?? null,
-            height: dimensions?.height ?? null,
+            width: processed.width,
+            height: processed.height,
           },
         });
       });

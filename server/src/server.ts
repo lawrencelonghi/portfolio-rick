@@ -64,6 +64,11 @@ app.use((req, res, next) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 })
 
+app.use('/uploads', express.static('uploads', {
+  maxAge: '30d',
+  immutable: true
+}));
+
 // Iniciar servidor
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
