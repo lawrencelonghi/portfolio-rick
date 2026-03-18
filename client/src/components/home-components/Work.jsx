@@ -1,5 +1,5 @@
 // Work.jsx
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
@@ -7,72 +7,108 @@ import Video from "yet-another-react-lightbox/plugins/video";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 
-const ROW_HEIGHT = 4; // deve coincidir com grid-auto-rows no CSS
-const GAP = 8;        // 0.5rem = 8px
+const ROW_HEIGHT = 4;
+const GAP = 8;
 
-// Calcula o span baseado nas dimensões conhecidas e na largura da coluna
 function calcSpan(width, height, colWidth) {
-  if (!width || !height || !colWidth) return 75; // fallback razoável
+  if (!width || !height || !colWidth) return 75;
   const renderedHeight = (height / width) * colWidth;
   return Math.ceil((renderedHeight + GAP) / (ROW_HEIGHT + GAP));
+}
+
+// Deriva a URL do thumbnail leve a partir do path original.
+// Imagens novas terão thumb_<filename>; imagens antigas fazem fallback para o full.
+function getThumbUrl(backendUrl, thumb) {
+  if (!thumb) return null;
+  const ext = thumb.filename.split(".").pop().toLowerCase();
+  const isVideo = ["mp4", "webm", "ogg", "mov"].includes(ext);
+  if (isVideo) return `${backendUrl}${thumb.path}`;
+  const thumbPath = thumb.path.replace(/\/uploads\/(.+)$/, "/uploads/thumb_$1");
+  return `${backendUrl}${thumbPath}`;
 }
 
 const MasonryItem = ({ campaign, onClick, backendUrl }) => {
   const itemRef = useRef(null);
   const [colWidth, setColWidth] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+  const [src, setSrc] = useState(null);
 
   const thumb = campaign.thumbnail;
-  const url = thumb ? `${backendUrl}${thumb.path}` : null;
+  const thumbUrl = getThumbUrl(backendUrl, thumb);
+  const fullUrl = thumb ? `${backendUrl}${thumb.path}` : null;
   const ext = thumb ? thumb.filename.split(".").pop().toLowerCase() : null;
   const isVideo = ext && ["mp4", "webm", "ogg", "mov"].includes(ext);
 
-  // Mede a largura da coluna assim que o elemento está no DOM
+  // Reserva o espaço visual com aspect-ratio conhecido — elimina CLS
+  const aspectRatio = thumb?.width && thumb?.height
+    ? `${thumb.width} / ${thumb.height}`
+    : "3 / 4";
+
+  useEffect(() => {
+    setSrc(thumbUrl);
+  }, [thumbUrl]);
+
   useEffect(() => {
     if (!itemRef.current) return;
-
     const measure = () => {
-      if (itemRef.current) {
-        setColWidth(itemRef.current.getBoundingClientRect().width);
-      }
+      if (itemRef.current) setColWidth(itemRef.current.getBoundingClientRect().width);
     };
-
     measure();
-
     const ro = new ResizeObserver(measure);
     ro.observe(itemRef.current);
     return () => ro.disconnect();
   }, []);
 
-  // Span calculado a partir das dimensões da API — sem esperar onLoad
   const span = calcSpan(thumb?.width, thumb?.height, colWidth);
 
-  if (!url) return null;
+  if (!thumbUrl) return null;
 
   return (
     <div
       ref={itemRef}
-      className="bento-item relative group cursor-pointer"
-      style={{ gridRowEnd: `span ${span}` }}
+      className="relative group cursor-pointer"
+      style={{ gridRowEnd: `span ${span}`, aspectRatio }}
       onClick={() => onClick(campaign)}
     >
+      {/* Placeholder — visível até a imagem carregar */}
+      <div
+        className="absolute inset-0 bg-gray-100"
+        style={{
+          opacity: loaded ? 0 : 1,
+          transition: loaded ? 'opacity 800ms ease 100ms' : 'none',
+          zIndex: 1,
+          pointerEvents: "none",
+        }}
+      />
+
       {isVideo ? (
         <video
-          src={url}
+          src={src}
           className="w-full h-full object-cover"
           muted
           playsInline
+          preload="none"
+          onLoadedData={() => setLoaded(true)}
         />
       ) : (
         <img
-          src={url}
+          src={src}
           alt={campaign.title}
           className="w-full h-full object-cover"
           loading="lazy"
           decoding="async"
+          onLoad={() => setLoaded(true)}
+          onError={() => {
+            // thumb não existe (imagem antiga) — cai para o full
+            if (src !== fullUrl) setSrc(fullUrl);
+          }}
         />
       )}
 
-      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity">
+      <div
+        className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity"
+        style={{ zIndex: 2 }}
+      >
         <div className="text-center px-2">
           <span className="font-medium block">{campaign.title}</span>
           <span className="text-sm opacity-75">

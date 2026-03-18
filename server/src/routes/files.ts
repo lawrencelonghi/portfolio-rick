@@ -18,27 +18,32 @@ interface ProcessedFile {
   height: number | null;
 }
 
-// Processa imagem: converte para WebP, redimensiona e retorna dimensões
 async function processImage(file: Express.Multer.File): Promise<ProcessedFile> {
   const ext = path.extname(file.filename).replace('.', '').toLowerCase();
 
-  // Vídeos: não processa, só retorna
   if (VIDEO_EXTENSIONS.includes(ext)) {
     return { filename: file.filename, width: null, height: null };
   }
 
-  // Imagens: converte para WebP
   const baseName = path.basename(file.filename, path.extname(file.filename));
   const webpFilename = baseName + '.webp';
   const webpPath = path.join('uploads', webpFilename);
+  const thumbPath = path.join('uploads', 'thumb_' + webpFilename);
 
   try {
+    // 1. Versão full — usada no lightbox
     const metadata = await sharp(file.path)
-      .webp({ quality: 82 })
-      .resize({ width: 1920, withoutEnlargement: true })
+      .webp({ quality: 70 })
+      .resize({ width: 1280, withoutEnlargement: true })
       .toFile(webpPath);
 
-    // Remove o arquivo original após conversão
+    // 2. Versão thumbnail leve — usada nas capas da homepage
+    await sharp(file.path)
+      .webp({ quality: 55 })
+      .resize({ width: 600, withoutEnlargement: true })
+      .toFile(thumbPath);
+
+    // Remove o arquivo original somente após ambas as conversões
     fs.unlinkSync(file.path);
 
     return {
@@ -48,8 +53,6 @@ async function processImage(file: Express.Multer.File): Promise<ProcessedFile> {
     };
   } catch (err) {
     console.error('Erro ao converter imagem para WebP:', err);
-
-    // Fallback: se falhar, usa o arquivo original e tenta ler as dimensões
     try {
       const meta = await sharp(file.path).metadata();
       return {
@@ -154,13 +157,13 @@ router.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
     }
 
     const filePath = path.join(process.cwd(), 'uploads', imgVdo.filename);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
-    await prisma.imgVdo.delete({
-      where: { id },
-    });
+    // Remove o thumbnail leve também, se existir
+    const thumbPath = path.join(process.cwd(), 'uploads', 'thumb_' + imgVdo.filename);
+    if (fs.existsSync(thumbPath)) fs.unlinkSync(thumbPath);
+
+    await prisma.imgVdo.delete({ where: { id } });
 
     return res.json({ message: 'imgVdo deleted successfully' });
   } catch (error) {

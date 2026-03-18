@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import AOS from "aos";
-import "aos/dist/aos.css";
+
 
 export const About = () => {
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
@@ -10,13 +9,7 @@ export const About = () => {
   const [profileText, setProfileText] = useState({ textPt: '', textEn: '' });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      offset: 400, 
-      once: true,
-    });
-  }, []);
+
 
   useEffect(() => {
     const fetchProfileImage = async () => {
@@ -58,7 +51,7 @@ export const About = () => {
 
   return (
     <section id="about" className="ml-8 mr-8 pt-20 md:pt-28 flex gap-30 relative">
-      <div data-aos="fade-right" className="hidden z-10 space-y-18 md:flex flex-col items-center">
+      <div  className="hidden z-10 space-y-18 md:flex flex-col items-center">
         {loading ? (
           <div className="w-64 h-64 bg-gray-200 animate-pulse rounded" />
         ) : profileImage?.path ? (
@@ -73,7 +66,7 @@ export const About = () => {
           </div>
         )}
       </div>
-      <div data-aos="fade-left" className="max-w-prose mx-auto tracking-wider text-sm">
+      <div className="max-w-prose mx-auto tracking-wider text-sm">
         {paragraphs.length > 0 ? (
           paragraphs.map((paragraph, index) => (
             <p key={index} className="mb-6">

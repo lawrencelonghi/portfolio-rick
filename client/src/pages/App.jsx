@@ -9,11 +9,9 @@ import { Contact } from '../components/home-components/Contact'
 import smoothscroll from 'smoothscroll-polyfill';
 
 
-// Ativa o polyfill ANTES de tudo
+// ativa o scroll polyfill ANTES de tudo
 smoothscroll.polyfill();
 
-import AOS from 'aos';
-import 'aos/dist/aos.css';
 import Footer from '../components/home-components/Footer'
 
 function App() {
