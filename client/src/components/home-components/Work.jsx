@@ -23,8 +23,9 @@ function getThumbUrl(backendUrl, thumb) {
   const ext = thumb.filename.split(".").pop().toLowerCase();
   const isVideo = ["mp4", "webm", "ogg", "mov"].includes(ext);
   if (isVideo) return `${backendUrl}${thumb.path}`;
-  const thumbPath = thumb.path.replace(/\/uploads\/(.+)$/, "/uploads/thumb_$1");
-  return `${backendUrl}${thumbPath}`;
+  // Thumbs são sempre .webp independente do formato original
+  const baseName = thumb.filename.replace(/\.[^.]+$/, "");
+  return `${backendUrl}/uploads/thumb_${baseName}.webp`;
 }
 
 const MasonryItem = ({ campaign, onClick, backendUrl }) => {
